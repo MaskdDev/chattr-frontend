@@ -2,7 +2,7 @@ import HomePageHero from "@/components/HomePageHero";
 
 export default function HomePage() {
   return (
-    <div className="min-h-dvh bg-black">
+    <div className="h-dvh overflow-y-hidden bg-black">
       <HomePageHero />
     </div>
   );
