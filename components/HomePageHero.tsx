@@ -4,7 +4,7 @@ import HomePageButton from "@/components/HomePageButton";
 
 export default function HomePageHero() {
   return (
-    <div className="flex h-screen w-full flex-col items-center justify-center bg-linear-to-tr from-slate-950 from-65% to-cyan-300">
+    <div className="flex h-full w-full flex-col items-center justify-center bg-linear-to-tr from-slate-950 from-65% to-cyan-300">
       <div className="flex flex-col items-center">
         <Image
           src="/logo.png"
