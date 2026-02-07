@@ -15,7 +15,7 @@ export default function SourceDropdown() {
       <DropdownMenuTrigger asChild>
         <Button
           size="lg"
-          className="w-40 bg-slate-200 font-sans text-lg text-slate-950 hover:text-white"
+          className="w-40 bg-slate-200 font-sans text-lg text-slate-950 hover:text-slate-50"
         >
           <SiGithub />
           View Source

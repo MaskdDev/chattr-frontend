@@ -1,10 +1,11 @@
 import Image from "next/image";
 import SourceDropdown from "@/components/SourceDropdown";
 import HomePageButton from "@/components/HomePageButton";
+import CentredGradientContainer from "@/components/CentredGradientContainer";
 
 export default function HomePageHero() {
   return (
-    <div className="flex h-full w-full flex-col items-center justify-center bg-linear-to-tr from-slate-950 from-65% to-cyan-300">
+    <CentredGradientContainer>
       <div className="flex flex-col items-center">
         <Image
           src="/logo.png"
@@ -31,6 +32,6 @@ export default function HomePageHero() {
           <SourceDropdown />
         </div>
       </div>
-    </div>
+    </CentredGradientContainer>
   );
 }
