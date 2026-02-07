@@ -11,10 +11,10 @@ export default function HomePageButton({
   return (
     <Button
       size="lg"
-      className="bg-slate-200 text-lg text-slate-950 hover:text-white"
+      className="w-32 bg-slate-200 text-lg text-slate-950 hover:text-white"
       asChild
     >
-      <Link href={href}>{text}</Link>
+      <a href={href}>{text}</a>
     </Button>
   );
 }
