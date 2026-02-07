@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { SiGithub } from "@icons-pack/react-simple-icons";
+import { Button } from "@/components/ui/button";
 
 export default function HomePageHeader() {
   return (
@@ -17,11 +18,16 @@ export default function HomePageHeader() {
         </h1>
       </div>
       <div className="flex flex-row items-center">
-        <button className="hover:brightness-150">
+        <Button
+          className="hover:brightness-150"
+          size="icon-lg"
+          aria-label="View GitHub Source"
+          asChild
+        >
           <a href="https://github.com/MaskdDev/chattr-frontend">
             <SiGithub className="size-6" />
           </a>
-        </button>
+        </Button>
         <button className="hover:brightness-150"></button>
       </div>
     </div>
