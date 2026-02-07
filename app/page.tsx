@@ -1,7 +1,11 @@
-export default function Page() {
+import HomePageHeader from "@/components/HomePageHeader";
+import HomePageHero from "@/components/HomePageHero";
+
+export default function HomePage() {
   return (
-    <div className="bg-slate-950 flex flex-col items-center justify-center min-h-screen">
-      <h1 className="text-6xl sm:text-8xl text-center">Hello <span className="text-cyan-300 ">Chattr!</span></h1>
+    <div className="min-h-screen bg-black">
+      <HomePageHeader />
+      <HomePageHero />
     </div>
   );
 }
