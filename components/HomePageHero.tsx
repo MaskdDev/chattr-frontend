@@ -28,7 +28,7 @@ export default function HomePageHero() {
 
         <div className="mt-3 flex w-full flex-col flex-wrap items-center justify-center gap-2 px-10 sm:mt-7 sm:flex-row sm:gap-5">
           <HomePageButton href="/signup" text="Sign Up" />
-          <HomePageButton href="/login" text="Login" />
+          <HomePageButton href="/signin" text="Sign In" />
           <SourceDropdown />
         </div>
       </div>

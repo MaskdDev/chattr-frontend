@@ -51,7 +51,7 @@ const signupFormSchema = z
     path: ["confirmPassword"],
   });
 
-export default function SignupForm({
+export default function SignUpForm({
   className,
   ...props
 }: React.ComponentProps<"form">) {
@@ -309,7 +309,7 @@ export default function SignupForm({
             Sign up with Google
           </Button>
           <FieldDescription className="px-6 text-center">
-            Already have an account? <Link href="/login">Log in</Link>
+            Already have an account? <Link href="/signin">Sign in</Link>
           </FieldDescription>
         </Field>
       </FieldGroup>
