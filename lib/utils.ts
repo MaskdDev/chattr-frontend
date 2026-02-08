@@ -1,6 +1,20 @@
-import { clsx, type ClassValue } from "clsx"
-import { twMerge } from "tailwind-merge"
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
+  return twMerge(clsx(inputs));
+}
+
+/**
+ * Get the backend URL for this deployment.
+ */
+export function backendUrl(): string {
+  return process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:3000";
+}
+
+/**
+ * Get the frontend URL for this deployment.
+ */
+export function frontendUrl(): string {
+  return process.env.NEXT_PUBLIC_FRONTEND_URL || "http://localhost:3001";
 }

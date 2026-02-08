@@ -3,6 +3,6 @@ import { passkeyClient } from "@better-auth/passkey/client";
 import { usernameClient } from "better-auth/client/plugins";
 
 export const authClient = createAuthClient({
-  baseURL: "http://localhost:3000",
+  baseURL: process.env.NEXT_PUBLIC_BACKEND_URL,
   plugins: [passkeyClient(), usernameClient()],
 });

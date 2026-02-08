@@ -1,6 +1,6 @@
 "use client";
 
-import { cn } from "@/lib/utils";
+import { cn, frontendUrl } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
   Field,
@@ -148,8 +148,8 @@ export default function SignInForm({
             onClick={async () => {
               await authClient.signIn.social({
                 provider: "github",
-                callbackURL: "http://localhost:3001/dashboard",
-                newUserCallbackURL: "http://localhost:3001/completeSignUp",
+                callbackURL: `${frontendUrl()}/dashboard`,
+                newUserCallbackURL: `${frontendUrl()}/complete-sign-up`,
               });
             }}
           >
@@ -162,8 +162,8 @@ export default function SignInForm({
             onClick={async () => {
               await authClient.signIn.social({
                 provider: "google",
-                callbackURL: "http://localhost:3001/dashboard",
-                newUserCallbackURL: "http://localhost:3001/completeSignUp",
+                callbackURL: `${frontendUrl()}/dashboard`,
+                newUserCallbackURL: `${frontendUrl()}/complete-sign-up`,
               });
             }}
           >
