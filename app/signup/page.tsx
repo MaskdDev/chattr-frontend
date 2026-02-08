@@ -1,5 +1,5 @@
 import { ArrowLeft } from "lucide-react";
-import styles from "../../styles/heropatterns.module.css";
+import styles from "@/styles/heropatterns.module.css";
 import SignUpForm from "@/components/SignUpForm";
 import Link from "next/link";
 
