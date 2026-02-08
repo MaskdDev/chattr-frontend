@@ -1,4 +1,5 @@
 import { ReactNode } from "react";
+import styles from "../styles/heropatterns.module.css";
 
 /**
  * A container that takes up the whole width and height of its parent, and centres its contents in a flex layout.

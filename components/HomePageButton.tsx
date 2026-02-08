@@ -14,7 +14,7 @@ export default function HomePageButton({
       className="w-32 bg-slate-200 font-sans text-lg text-slate-950 hover:text-slate-50"
       asChild
     >
-      <a href={href}>{text}</a>
+      <Link href={href}>{text}</Link>
     </Button>
   );
 }
