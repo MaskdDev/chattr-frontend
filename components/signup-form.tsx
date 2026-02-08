@@ -11,11 +11,13 @@ import {
   FieldSeparator,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import React from "react";
-import { SiGithub } from "@icons-pack/react-simple-icons";
+import React, { useState } from "react";
+import { SiGithub, SiGoogle } from "@icons-pack/react-simple-icons";
 import Link from "next/link";
 import * as z from "zod";
 import { useForm } from "@tanstack/react-form";
+import { authClient } from "@/lib/auth-client";
+import { redirect } from "next/navigation";
 
 // Create signup form schema
 const signupFormSchema = z
@@ -53,6 +55,9 @@ export function SignupForm({
   className,
   ...props
 }: React.ComponentProps<"form">) {
+  // Create form lock state
+  const [formLock, setFormLock] = useState(false);
+
   // Create TanStack form
   const form = useForm({
     defaultValues: {
@@ -67,7 +72,32 @@ export function SignupForm({
       onSubmit: signupFormSchema,
     },
     onSubmit: async ({ value }) => {
-      alert(`Form submitted successfully! ${JSON.stringify(value)}`);
+      if (!formLock) {
+        authClient.signUp.email(
+          {
+            name: value.name,
+            email: value.email,
+            password: value.password,
+            username: value.username,
+            displayUsername: value.displayName,
+          },
+          {
+            onRequest: () => {
+              // Disable form
+              setFormLock(true);
+            },
+            onSuccess: () => {
+              // Redirect to dashboard
+              redirect("/dashboard");
+            },
+            onError: (ctx) => {
+              // Re-enable form and send alert
+              setFormLock(false);
+              alert(ctx.error.message);
+            },
+          },
+        );
+      }
     },
   });
 
@@ -250,9 +280,33 @@ export function SignupForm({
 
         <FieldSeparator className="my-1">Or continue with</FieldSeparator>
         <Field className="gap-2">
-          <Button variant="outline" type="button">
+          <Button
+            variant="outline"
+            type="button"
+            onClick={async () => {
+              await authClient.signIn.social({
+                provider: "github",
+                callbackURL: "http://localhost:3001/dashboard",
+                newUserCallbackURL: "http://localhost:3001/completeSignUp",
+              });
+            }}
+          >
             <SiGithub />
-            Sign up with GitHub
+            Sign up with Github
+          </Button>
+          <Button
+            variant="outline"
+            type="button"
+            onClick={async () => {
+              await authClient.signIn.social({
+                provider: "google",
+                callbackURL: "http://localhost:3001/dashboard",
+                newUserCallbackURL: "http://localhost:3001/completeSignUp",
+              });
+            }}
+          >
+            <SiGoogle />
+            Sign up with Google
           </Button>
           <FieldDescription className="px-6 text-center">
             Already have an account? <Link href="/login">Log in</Link>
