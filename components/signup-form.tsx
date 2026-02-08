@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import React from "react";
-import { SiGithub, SiGoogle } from "@icons-pack/react-simple-icons";
+import { SiGithub } from "@icons-pack/react-simple-icons";
 import Link from "next/link";
 
 export function SignupForm({
@@ -26,26 +26,26 @@ export function SignupForm({
           </p>
         </div>
 
-        <Field>
+        <Field className="gap-2">
           <FieldLabel htmlFor="name">Full Name</FieldLabel>
           <Input id="name" type="text" placeholder="John Doe" required />
         </Field>
 
-        <Field>
+        <Field className="gap-2">
           <FieldLabel htmlFor="username">Username</FieldLabel>
           <Input id="username" type="text" required />
           <FieldDescription>Please select a username.</FieldDescription>
         </Field>
 
-        <Field>
-          <FieldLabel htmlFor="username">Display Username</FieldLabel>
+        <Field className="gap-2">
+          <FieldLabel htmlFor="username">Display Name</FieldLabel>
           <Input id="username" type="text" required />
           <FieldDescription>
             Please select a name to be used in chat.
           </FieldDescription>
         </Field>
 
-        <Field>
+        <Field className="gap-2">
           <FieldLabel htmlFor="email">Email</FieldLabel>
           <Input
             id="email"
@@ -55,7 +55,7 @@ export function SignupForm({
           />
         </Field>
 
-        <Field>
+        <Field className="gap-2">
           <FieldLabel htmlFor="password">Password</FieldLabel>
           <Input id="password" type="password" required />
           <FieldDescription>
@@ -63,18 +63,18 @@ export function SignupForm({
           </FieldDescription>
         </Field>
 
-        <Field>
+        <Field className="gap-2">
           <FieldLabel htmlFor="confirm-password">Confirm Password</FieldLabel>
           <Input id="confirm-password" type="password" required />
           <FieldDescription>Please confirm your password.</FieldDescription>
         </Field>
 
-        <Field>
+        <Field className="gap-2">
           <Button type="submit">Create Account</Button>
         </Field>
 
         <FieldSeparator className="my-1">Or continue with</FieldSeparator>
-        <Field>
+        <Field className="gap-2">
           <Button variant="outline" type="button">
             <SiGithub />
             Sign up with GitHub
