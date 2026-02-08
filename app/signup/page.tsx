@@ -1,6 +1,6 @@
 import { ArrowLeft } from "lucide-react";
 import styles from "../../styles/heropatterns.module.css";
-import { SignupForm } from "@/components/signup-form";
+import SignupForm from "@/components/SignupForm";
 import Link from "next/link";
 
 export default function SignupPage() {

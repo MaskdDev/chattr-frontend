@@ -51,7 +51,7 @@ const signupFormSchema = z
     path: ["confirmPassword"],
   });
 
-export function SignupForm({
+export default function SignupForm({
   className,
   ...props
 }: React.ComponentProps<"form">) {
