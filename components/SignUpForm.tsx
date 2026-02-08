@@ -309,7 +309,7 @@ export default function SignUpForm({
             Sign up with Google
           </Button>
           <FieldDescription className="px-6 text-center">
-            Already have an account? <Link href="/signin">Sign in</Link>
+            Already have an account? <Link href="/sign-in">Sign in</Link>
           </FieldDescription>
         </Field>
       </FieldGroup>

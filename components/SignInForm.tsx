@@ -193,7 +193,7 @@ export default function SignInForm({
             Sign in with Passkey
           </Button>
           <FieldDescription className="px-6 text-center">
-            Don&#39;t have an account? <Link href="/signup">Sign up</Link>
+            Don&#39;t have an account? <Link href="/sign-up">Sign up</Link>
           </FieldDescription>
         </Field>
       </FieldGroup>
