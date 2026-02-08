@@ -97,6 +97,7 @@ export function SignupForm({
               <Field data-invalid={isInvalid} className="gap-2">
                 <FieldLabel htmlFor={field.name}>Full Name</FieldLabel>
                 <Input
+                  required
                   id={field.name}
                   type="text"
                   name={field.name}
@@ -121,6 +122,7 @@ export function SignupForm({
               <Field data-invalid={isInvalid} className="gap-2">
                 <FieldLabel htmlFor={field.name}>Username</FieldLabel>
                 <Input
+                  required
                   id={field.name}
                   type="text"
                   name={field.name}
@@ -146,6 +148,7 @@ export function SignupForm({
               <Field data-invalid={isInvalid} className="gap-2">
                 <FieldLabel htmlFor={field.name}>Display Name</FieldLabel>
                 <Input
+                  required
                   id={field.name}
                   type="text"
                   name={field.name}
@@ -173,6 +176,7 @@ export function SignupForm({
               <Field data-invalid={isInvalid} className="gap-2">
                 <FieldLabel htmlFor={field.name}>Email</FieldLabel>
                 <Input
+                  required
                   id={field.name}
                   type="email"
                   name={field.name}
@@ -197,6 +201,7 @@ export function SignupForm({
               <Field data-invalid={isInvalid} className="gap-2">
                 <FieldLabel htmlFor={field.name}>Password</FieldLabel>
                 <Input
+                  required
                   id={field.name}
                   type="password"
                   name={field.name}
@@ -223,6 +228,7 @@ export function SignupForm({
               <Field data-invalid={isInvalid} className="gap-2">
                 <FieldLabel htmlFor={field.name}>Confirm Password</FieldLabel>
                 <Input
+                  required
                   id={field.name}
                   type="password"
                   name={field.name}
