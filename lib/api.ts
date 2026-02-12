@@ -92,3 +92,22 @@ export async function updateRoom(
 export async function deleteRoom(roomId: string): Promise<void> {
   await deleteAuthed<void>(`/rooms/${roomId}`);
 }
+
+/**
+ * Get the members in a specific room.
+ */
+export async function getMembers(roomId: string): Promise<UserProfile[]> {
+  return (
+    await getAuthed<{ members: UserProfile[] }>(`/rooms/${roomId}/members`)
+  ).members;
+}
+
+/**
+ * Remove a member from a room.
+ */
+export async function removeMember(
+  roomId: string,
+  memberId: string,
+): Promise<void> {
+  await deleteAuthed<void>(`/rooms/${roomId}/members/${memberId}`);
+}
