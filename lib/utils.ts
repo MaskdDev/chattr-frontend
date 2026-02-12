@@ -18,3 +18,10 @@ export function backendUrl(): string {
 export function frontendUrl(): string {
   return process.env.NEXT_PUBLIC_FRONTEND_URL || "http://localhost:3001";
 }
+
+/**
+ * Get the websocket gateway URL for this deployment.
+ */
+export function gatewayUrl(): string {
+  return process.env.NEXT_PUBLIC_GATEWAY_URL || "ws://localhost:3000/gateway";
+}
