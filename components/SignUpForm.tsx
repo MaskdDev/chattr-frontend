@@ -18,6 +18,7 @@ import * as z from "zod";
 import { useForm } from "@tanstack/react-form";
 import { authClient } from "@/lib/auth-client";
 import { redirect } from "next/navigation";
+import { useAuth } from "@/app/providers/AuthProvider";
 
 // Create signup form schema
 const signupFormSchema = z
@@ -55,6 +56,9 @@ export default function SignUpForm({
   className,
   ...props
 }: React.ComponentProps<"form">) {
+  // Use auth
+  const auth = useAuth();
+
   // Create form lock state
   const [formLock, setFormLock] = useState(false);
 
@@ -86,7 +90,10 @@ export default function SignUpForm({
               // Disable form
               setFormLock(true);
             },
-            onSuccess: () => {
+            onSuccess: async () => {
+              // Refetch auth state
+              await auth.refetch();
+
               // Redirect to dashboard
               redirect("/dashboard");
             },

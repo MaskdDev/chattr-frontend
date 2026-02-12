@@ -19,6 +19,7 @@ import { useForm } from "@tanstack/react-form";
 import { authClient } from "@/lib/auth-client";
 import { redirect } from "next/navigation";
 import { KeyIcon } from "lucide-react";
+import { useAuth } from "@/app/providers/AuthProvider";
 
 // Create sign in form schema
 const signinFormSchema = z.object({
@@ -30,6 +31,9 @@ export default function SignInForm({
   className,
   ...props
 }: React.ComponentProps<"form">) {
+  // Use auth
+  const auth = useAuth();
+
   // Create form lock state
   const [formLock, setFormLock] = useState(false);
 
@@ -54,7 +58,10 @@ export default function SignInForm({
               // Disable form
               setFormLock(true);
             },
-            onSuccess: () => {
+            onSuccess: async () => {
+              // Refetch auth state
+              await auth.refetch();
+
               // Redirect to dashboard
               redirect("/dashboard");
             },

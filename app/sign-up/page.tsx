@@ -1,9 +1,21 @@
+"use client";
+
 import { ArrowLeft } from "lucide-react";
 import styles from "@/styles/heropatterns.module.css";
 import SignUpForm from "@/components/SignUpForm";
 import Link from "next/link";
+import { redirect } from "next/navigation";
+import { useAuth } from "@/app/providers/AuthProvider";
 
 export default function SignUpPage() {
+  // Use auth
+  const { session } = useAuth();
+
+  // If user is logged in, redirect to dashboard
+  if (session !== null) {
+    redirect("/dashboard");
+  }
+
   return (
     <div className="grid min-h-svh lg:grid-cols-2">
       <div className="flex flex-col gap-4 p-6 md:p-10">
