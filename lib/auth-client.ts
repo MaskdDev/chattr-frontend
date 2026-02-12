@@ -6,3 +6,5 @@ export const authClient = createAuthClient({
   baseURL: process.env.NEXT_PUBLIC_BACKEND_URL,
   plugins: [passkeyClient(), usernameClient()],
 });
+
+export type Session = typeof authClient.$Infer.Session;
