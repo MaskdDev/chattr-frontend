@@ -5,6 +5,7 @@ import { AuthProvider } from "@/app/providers/AuthProvider";
 import { Toaster } from "@/components/ui/sonner";
 import { gatewaySocket } from "@/lib/sockets";
 import { toast } from "sonner";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 export default function Providers({ children }: { children: ReactNode }) {
   // Add gateway socket event listeners
@@ -34,11 +35,13 @@ export default function Providers({ children }: { children: ReactNode }) {
     };
   }, []);
 
+  // Create query client
+  const queryClient = new QueryClient();
+
   // Return providers
   return (
     <AuthProvider>
-      {children}
-      <Toaster richColors position="top-center" />
+      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
     </AuthProvider>
   );
 }

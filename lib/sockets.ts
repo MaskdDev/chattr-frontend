@@ -194,7 +194,7 @@ export class GatewaySocket {
         }
 
         // Try reconnecting after the retry cooldown
-        setTimeout(this.connect, this.retryCooldown);
+        setTimeout(() => this.connect(), this.retryCooldown);
 
         // Double retry cooldown
         this.retryCooldown *= 2;

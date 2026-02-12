@@ -1,7 +1,7 @@
 import { createContext, ReactNode, useContext } from "react";
 import { authClient, Session } from "@/lib/auth-client";
-import { Spinner } from "@/components/ui/spinner";
 import { SessionQueryParams } from "better-auth";
+import LoadingScreen from "@/components/LoadingScreen";
 
 export type AuthContextType = {
   session: Session | null;
@@ -31,12 +31,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   return (
     <AuthContext.Provider value={{ session, isPending, refetch, isRefetching }}>
       {isPending || isRefetching ? (
-        <div className="flex h-dvh w-dvw flex-col items-center justify-center gap-4 bg-slate-950 sm:gap-7">
-          <h1 className="text-center font-sans text-4xl text-cyan-300 sm:text-6xl">
-            Authenticating
-          </h1>
-          <Spinner className="size-8 text-cyan-300 sm:size-16" />
-        </div>
+        <LoadingScreen loadingText="Authenticating" />
       ) : (
         children
       )}
