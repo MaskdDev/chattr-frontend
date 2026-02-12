@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Sidebar,
   SidebarContent,
@@ -7,10 +9,19 @@ import {
 import { PartialRoom } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-import { Hash, Plus } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Hash, MailCheck, Plus } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import RoomCreateDialog from "@/components/dialogs/RoomCreateDialog";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import InviteAcceptDialog from "@/components/dialogs/InviteAcceptDialog";
+import { useState } from "react";
 
 export default function RoomSidebar({
   rooms,
@@ -19,6 +30,11 @@ export default function RoomSidebar({
   rooms: PartialRoom[];
   activeRoomId?: string;
 }) {
+  // Create dialog state
+  const [roomCreateOpen, setRoomCreateOpen] = useState(false);
+  const [acceptInviteOpen, setAcceptInviteOpen] = useState(false);
+
+  // Return component
   return (
     <Sidebar className="bg-slate-950 px-3 py-6" variant="sidebar">
       <SidebarHeader className="p-0">
@@ -32,11 +48,25 @@ export default function RoomSidebar({
           <h2 className="font-sans text-xl font-semibold text-slate-50">
             Rooms
           </h2>
-          <RoomCreateDialog>
-            <button className="text-slate-50 hover:brightness-75">
-              <Plus className="size-5" />
-            </button>
-          </RoomCreateDialog>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button className="text-slate-50 hover:brightness-75">
+                <Plus className="size-5" />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuGroup>
+                <DropdownMenuItem onClick={() => setRoomCreateOpen(true)}>
+                  <Plus />
+                  Create New Room
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setAcceptInviteOpen(true)}>
+                  <MailCheck />
+                  Accept Invite
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
         {rooms?.map((room) => (
           <Link
@@ -61,6 +91,11 @@ export default function RoomSidebar({
           Sign Out
         </Button>
       </SidebarFooter>
+      <RoomCreateDialog open={roomCreateOpen} setOpen={setRoomCreateOpen} />
+      <InviteAcceptDialog
+        open={acceptInviteOpen}
+        setOpen={setAcceptInviteOpen}
+      />
     </Sidebar>
   );
 }

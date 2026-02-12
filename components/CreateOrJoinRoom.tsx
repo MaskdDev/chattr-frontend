@@ -1,9 +1,18 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { authClient } from "@/lib/auth-client";
 import RoomCreateDialog from "@/components/dialogs/RoomCreateDialog";
 import { ArrowLeft } from "lucide-react";
+import InviteAcceptDialog from "@/components/dialogs/InviteAcceptDialog";
+import { useState } from "react";
 
 export default function CreateOrJoinRoom() {
+  // Create dialog state
+  const [roomCreateOpen, setRoomCreateOpen] = useState(false);
+  const [acceptInviteOpen, setAcceptInviteOpen] = useState(false);
+
+  // Return component
   return (
     <div className="flex h-dvh flex-col items-center justify-center overflow-y-hidden bg-slate-950 sm:space-y-4">
       <a
@@ -20,22 +29,27 @@ export default function CreateOrJoinRoom() {
         Create or join one to start chatting.
       </h2>
       <div className="flex flex-col justify-center gap-4 sm:flex-row">
-        <RoomCreateDialog>
-          <Button
-            variant="secondary"
-            className="h-8 w-36 bg-slate-50 text-slate-950 sm:h-9 sm:w-50 sm:text-lg"
-          >
-            Create Room
-          </Button>
-        </RoomCreateDialog>
+        <Button
+          variant="secondary"
+          className="h-8 w-36 bg-slate-50 text-slate-950 sm:h-9 sm:w-50 sm:text-lg"
+          onClick={() => setRoomCreateOpen(true)}
+        >
+          Create Room
+        </Button>
 
         <Button
           variant="secondary"
           className="h-8 w-36 bg-slate-50 text-slate-950 sm:h-9 sm:w-50 sm:text-lg"
+          onClick={() => setAcceptInviteOpen(true)}
         >
           Join Room
         </Button>
       </div>
+      <RoomCreateDialog open={roomCreateOpen} setOpen={setRoomCreateOpen} />
+      <InviteAcceptDialog
+        open={acceptInviteOpen}
+        setOpen={setAcceptInviteOpen}
+      />
     </div>
   );
 }

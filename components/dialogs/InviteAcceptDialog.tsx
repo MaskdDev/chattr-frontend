@@ -15,33 +15,29 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import React, { useState, Dispatch, SetStateAction } from "react";
 import { useForm } from "@tanstack/react-form";
 import * as z from "zod";
-import { createRoom } from "@/lib/api";
-import { useQueryClient } from "@tanstack/react-query";
+import { acceptInvite } from "@/lib/api";
+import { AxiosError } from "axios";
 import { Spinner } from "@/components/ui/spinner";
+import { useQueryClient } from "@tanstack/react-query";
 
-// Create room create form schema
-const roomCreateFormSchema = z.object({
-  name: z
+// Create invite accept form schema
+const inviteAcceptFormSchema = z.object({
+  inviteCode: z
     .string()
-    .min(3, "Room name must be at least 3 characters long.")
-    .max(40, "Room name must be at most 40 characters long."),
-  description: z
-    .string()
-    .max(150, "Room description must be at most 150 characters long."),
+    .max(20, "Invite codes can't be more than 20 characters long."),
 });
 
-export default function RoomCreateDialog({
+export default function InviteAcceptDialog({
   open,
   setOpen,
 }: {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
 }) {
-  // Create form lock state
+  // Create form lock state and error
   const [formLock, setFormLock] = useState(false);
 
   // Use query client
@@ -50,26 +46,47 @@ export default function RoomCreateDialog({
   // Create TanStack form
   const form = useForm({
     defaultValues: {
-      name: "",
-      description: "",
+      inviteCode: "",
     },
     validators: {
-      onSubmit: roomCreateFormSchema,
+      onSubmit: inviteAcceptFormSchema,
     },
-    onSubmit: async ({ value }) => {
+    onSubmit: async ({ value, formApi }) => {
       if (!formLock) {
         // Set form lock
         setFormLock(true);
 
         try {
-          // Send room creation request and refetch rooms
-          await createRoom(value);
+          // Try accepting invite and refetch rooms
+          await acceptInvite(value.inviteCode);
           await queryClient.refetchQueries({ queryKey: ["rooms"] });
 
           // Close modal
           setOpen(false);
         } catch (e) {
-          alert("Error creating room. Please try again later.");
+          if (e instanceof AxiosError) {
+            switch (e.status) {
+              case 404: {
+                formApi.setFieldMeta("inviteCode", (prev) => ({
+                  ...prev,
+                  errors: ["Invalid invite code."],
+                }));
+                break;
+              }
+              case 409: {
+                formApi.setFieldMeta("inviteCode", (prev) => ({
+                  ...prev,
+                  errors: ["Invite code has been used or expired."],
+                }));
+                break;
+              }
+            }
+          } else {
+            formApi.setFieldMeta("inviteCode", (prev) => ({
+              ...prev,
+              errors: ["Error accepting invite. Please try again later."],
+            }));
+          }
         }
 
         // Unlock form
@@ -81,7 +98,7 @@ export default function RoomCreateDialog({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <form
-        id="create-room-form"
+        id="invite-accept-form"
         onSubmit={(e) => {
           e.preventDefault();
           void form.handleSubmit();
@@ -89,19 +106,19 @@ export default function RoomCreateDialog({
       >
         <DialogContent className="sm:max-w-sm">
           <DialogHeader>
-            <DialogTitle>Create Room</DialogTitle>
+            <DialogTitle>Accept Invite</DialogTitle>
             <DialogDescription>
-              Enter the details for your new room here.
+              Enter an invite code to join the room!
             </DialogDescription>
           </DialogHeader>
           <FieldGroup className="gap-3">
-            <form.Field name="name">
+            <form.Field name="inviteCode">
               {(field) => {
                 const isInvalid =
                   field.state.meta.isTouched && !field.state.meta.isValid;
                 return (
                   <Field data-invalid={isInvalid}>
-                    <FieldLabel htmlFor={field.name}>Room Name</FieldLabel>
+                    <FieldLabel htmlFor={field.name}>Invite Code</FieldLabel>
                     <Input
                       required
                       id={field.name}
@@ -111,33 +128,7 @@ export default function RoomCreateDialog({
                       onBlur={field.handleBlur}
                       onChange={(e) => field.handleChange(e.target.value)}
                       aria-invalid={isInvalid}
-                      placeholder="General"
-                      autoComplete="off"
-                    />
-                    {isInvalid && (
-                      <FieldError errors={field.state.meta.errors} />
-                    )}
-                  </Field>
-                );
-              }}
-            </form.Field>
-
-            <form.Field name="description">
-              {(field) => {
-                const isInvalid =
-                  field.state.meta.isTouched && !field.state.meta.isValid;
-                return (
-                  <Field data-invalid={isInvalid}>
-                    <FieldLabel htmlFor={field.name}>
-                      Room Description
-                    </FieldLabel>
-                    <Textarea
-                      id={field.name}
-                      name={field.name}
-                      value={field.state.value}
-                      onBlur={field.handleBlur}
-                      onChange={(e) => field.handleChange(e.target.value)}
-                      aria-invalid={isInvalid}
+                      placeholder="abd3ka"
                       autoComplete="off"
                     />
                     {isInvalid && (
@@ -152,9 +143,9 @@ export default function RoomCreateDialog({
             <DialogClose asChild>
               <Button variant="outline">Cancel</Button>
             </DialogClose>
-            <Button type="submit" form="create-room-form" disabled={formLock}>
+            <Button type="submit" form="invite-accept-form" disabled={formLock}>
               {formLock ? <Spinner /> : <></>}
-              Create Room
+              Accept Invite
             </Button>
           </DialogFooter>
         </DialogContent>
