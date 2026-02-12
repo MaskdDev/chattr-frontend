@@ -1,6 +1,9 @@
 import axios from "axios";
 import { backendUrl } from "@/lib/utils";
 import {
+  Invite,
+  InviteCreate,
+  PartialInvite,
   PartialRoom,
   Room,
   RoomCreate,
@@ -110,4 +113,42 @@ export async function removeMember(
   memberId: string,
 ): Promise<void> {
   await deleteAuthed<void>(`/rooms/${roomId}/members/${memberId}`);
+}
+
+/**
+ * Get the invites for a room.
+ */
+export async function getInvites(roomId: string): Promise<Invite[]> {
+  return (await getAuthed<{ invites: Invite[] }>(`/rooms/${roomId}/invites`))
+    .invites;
+}
+
+/**
+ * Create a new invite for a room.
+ */
+export async function createInvite(
+  roomId: string,
+  body: InviteCreate,
+): Promise<PartialInvite> {
+  return await postAuthed<PartialInvite>(`/rooms/${roomId}`, body);
+}
+
+/**
+ * Get information for a specific invite.
+ */
+export async function getInvite(inviteCode: string): Promise<Invite> {
+  return await getAuthed<Invite>(`/invites/${inviteCode}`);
+}
+
+/**
+ * Accept an invite with the given code.
+ */
+export async function acceptInvite(inviteCode: string): Promise<void> {
+  return await postAuthed<void>(`/invites/${inviteCode}`, {});
+}
+/**
+ * Delete the invite with the specified code.
+ */
+export async function deleteInvite(inviteCode: string): Promise<void> {
+  await deleteAuthed<void>(`/invites/${inviteCode}`);
 }
