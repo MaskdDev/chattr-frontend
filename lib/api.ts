@@ -3,6 +3,8 @@ import { backendUrl } from "@/lib/utils";
 import {
   Invite,
   InviteCreate,
+  Message,
+  MessageCreate,
   PartialInvite,
   PartialRoom,
   Room,
@@ -151,4 +153,73 @@ export async function acceptInvite(inviteCode: string): Promise<void> {
  */
 export async function deleteInvite(inviteCode: string): Promise<void> {
   await deleteAuthed<void>(`/invites/${inviteCode}`);
+}
+
+/**
+ * Get the messages for a room.
+ */
+export async function getMessages(
+  roomId: string,
+  limit: number = 25,
+  before?: string,
+  after?: string,
+): Promise<Message[]> {
+  // Construct query string
+  let queryString = `?limit=${limit}`;
+  if (before) {
+    queryString += `&before=${before}`;
+  }
+  if (after) {
+    queryString += `&after=${after}`;
+  }
+
+  // Return request
+  return (
+    await getAuthed<{ messages: Message[] }>(
+      `/rooms/${roomId}/messages${queryString}`,
+    )
+  ).messages;
+}
+
+/**
+ * Send a new message in a room.
+ */
+export async function postMessage(
+  roomId: string,
+  content: string,
+): Promise<Message> {
+  return await postAuthed<Message>(`/rooms/${roomId}/messages`, { content });
+}
+
+/**
+ * Fetch a message from a room.
+ */
+export async function getMessage(
+  roomId: string,
+  messageId: string,
+): Promise<Message> {
+  return await getAuthed<Message>(`/rooms/${roomId}/messages/${messageId}`);
+}
+
+/**
+ * Edit a message in a room.
+ */
+export async function editMessage(
+  roomId: string,
+  messageId: string,
+  content: string,
+): Promise<void> {
+  await patchAuthed<void>(`/rooms/${roomId}/messages/${messageId}`, {
+    content,
+  });
+}
+
+/**
+ * Delete a message in a room.
+ */
+export async function deleteMessage(
+  roomId: string,
+  messageId: string,
+): Promise<void> {
+  await deleteAuthed<void>(`/rooms/${roomId}/messages/${messageId}`);
 }
