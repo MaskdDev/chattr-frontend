@@ -2,10 +2,11 @@
 
 import { ReactNode, useEffect } from "react";
 import { AuthProvider } from "@/app/providers/AuthProvider";
-import { Toaster } from "@/components/ui/sonner";
 import { gatewaySocket } from "@/lib/sockets";
 import { toast } from "sonner";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { SidebarProvider } from "@/components/ui/sidebar";
 
 export default function Providers({ children }: { children: ReactNode }) {
   // Add gateway socket event listeners
@@ -41,7 +42,9 @@ export default function Providers({ children }: { children: ReactNode }) {
   // Return providers
   return (
     <AuthProvider>
-      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+      <QueryClientProvider client={queryClient}>
+        <TooltipProvider>{children}</TooltipProvider>
+      </QueryClientProvider>
     </AuthProvider>
   );
 }
