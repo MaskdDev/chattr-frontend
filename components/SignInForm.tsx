@@ -63,7 +63,7 @@ export default function SignInForm({
               await auth.refetch();
 
               // Redirect to dashboard
-              redirect("/dashboard");
+              redirect("/rooms");
             },
             onError: (ctx) => {
               // Re-enable form and send alert
@@ -155,7 +155,7 @@ export default function SignInForm({
             onClick={async () => {
               await authClient.signIn.social({
                 provider: "github",
-                callbackURL: `${frontendUrl()}/dashboard`,
+                callbackURL: `${frontendUrl()}/rooms`,
                 newUserCallbackURL: `${frontendUrl()}/complete-sign-up`,
               });
             }}
@@ -169,7 +169,7 @@ export default function SignInForm({
             onClick={async () => {
               await authClient.signIn.social({
                 provider: "google",
-                callbackURL: `${frontendUrl()}/dashboard`,
+                callbackURL: `${frontendUrl()}/rooms`,
                 newUserCallbackURL: `${frontendUrl()}/complete-sign-up`,
               });
             }}
@@ -185,7 +185,7 @@ export default function SignInForm({
                 fetchOptions: {
                   onSuccess() {
                     // Redirect to dashboard
-                    redirect("/dashboard");
+                    redirect("/rooms");
                   },
                   onError() {
                     alert(

@@ -13,7 +13,7 @@ export default function SignUpPage() {
 
   // If user is logged in, redirect to dashboard
   if (session !== null) {
-    redirect("/dashboard");
+    redirect("/rooms");
   }
 
   return (

@@ -13,7 +13,7 @@
     "@icons-pack/react-simple-icons": "^13.8.0",
     "@tanstack/react-form": "^1.28.0",
     "@tanstack/react-form-nextjs": "^1.28.0",
-    "@tanstack/react-query": "^5.90.20",
+    "@tanstack/react-query": "^5.90.21",
     "axios": "^1.13.5",
     "better-auth": "^1.4.18",
     "class-variance-authority": "^0.7.1",
