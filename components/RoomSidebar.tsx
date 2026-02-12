@@ -10,6 +10,7 @@ import Link from "next/link";
 import { Hash, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { authClient } from "@/lib/auth-client";
+import RoomCreateDialog from "@/components/dialogs/RoomCreateDialog";
 
 export default function RoomSidebar({
   rooms,
@@ -31,9 +32,11 @@ export default function RoomSidebar({
           <h2 className="font-sans text-xl font-semibold text-slate-50">
             Rooms
           </h2>
-          <button className="text-slate-50 hover:brightness-75">
-            <Plus className="size-5" />
-          </button>
+          <RoomCreateDialog>
+            <button className="text-slate-50 hover:brightness-75">
+              <Plus className="size-5" />
+            </button>
+          </RoomCreateDialog>
         </div>
         {rooms?.map((room) => (
           <Link

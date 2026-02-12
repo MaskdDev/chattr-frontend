@@ -1,5 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { authClient } from "@/lib/auth-client";
+import RoomCreateDialog from "@/components/dialogs/RoomCreateDialog";
+import { ArrowLeft } from "lucide-react";
 
 export default function CreateOrJoinRoom() {
   return (
@@ -8,6 +10,7 @@ export default function CreateOrJoinRoom() {
         className="absolute top-5 left-5 cursor-pointer text-lg text-slate-50 underline"
         onClick={() => authClient.signOut()}
       >
+        <ArrowLeft size={20} className="inline" />
         Sign Out
       </a>
       <h1 className="mb-2.5 text-center text-4xl text-cyan-300 sm:mb-4 sm:text-6xl">
@@ -17,12 +20,15 @@ export default function CreateOrJoinRoom() {
         Create or join one to start chatting.
       </h2>
       <div className="flex flex-col justify-center gap-4 sm:flex-row">
-        <Button
-          variant="secondary"
-          className="h-8 w-36 bg-slate-50 text-slate-950 sm:h-9 sm:w-50 sm:text-lg"
-        >
-          Create Room
-        </Button>
+        <RoomCreateDialog>
+          <Button
+            variant="secondary"
+            className="h-8 w-36 bg-slate-50 text-slate-950 sm:h-9 sm:w-50 sm:text-lg"
+          >
+            Create Room
+          </Button>
+        </RoomCreateDialog>
+
         <Button
           variant="secondary"
           className="h-8 w-36 bg-slate-50 text-slate-950 sm:h-9 sm:w-50 sm:text-lg"
