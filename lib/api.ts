@@ -29,6 +29,18 @@ async function getAuthed<T>(path: string): Promise<T> {
 }
 
 /**
+ * Make an authenticated GET request to the backend using the internal API key and return the JSON response.
+ */
+async function getAuthedInternal<T>(path: string): Promise<T> {
+  return (
+    await axios.get(`${backendUrl()}${path}`, {
+      headers: { Authorization: `Bearer ${process.env.INTERNAL_API_KEY}` },
+      withCredentials: true,
+    })
+  ).data;
+}
+
+/**
  * Make an authenticated POST request to the backend and return the JSON response.
  */
 async function postAuthed<T>(path: string, body: object): Promise<T> {
@@ -76,9 +88,22 @@ export async function createRoom(body: RoomCreate): Promise<PartialRoom> {
 
 /**
  * Get information on a specific room.
+ *
+ * Returns null if the room doesn't exist.
  */
-export async function getRoom(roomId: string): Promise<Room> {
-  return await getAuthed<Room>(`/rooms/${roomId}`);
+export async function getRoom(
+  roomId: string,
+  internal: boolean = false,
+): Promise<Room | null> {
+  try {
+    if (internal) {
+      return await getAuthedInternal<Room>(`/rooms/${roomId}`);
+    } else {
+      return await getAuthed<Room>(`/rooms/${roomId}`);
+    }
+  } catch {
+    return null;
+  }
 }
 
 /**
@@ -101,10 +126,21 @@ export async function deleteRoom(roomId: string): Promise<void> {
 /**
  * Get the members in a specific room.
  */
-export async function getMembers(roomId: string): Promise<UserProfile[]> {
-  return (
-    await getAuthed<{ members: UserProfile[] }>(`/rooms/${roomId}/members`)
-  ).members;
+export async function getMembers(
+  roomId: string,
+  internal: boolean = false,
+): Promise<UserProfile[]> {
+  if (internal) {
+    return (
+      await getAuthedInternal<{ members: UserProfile[] }>(
+        `/rooms/${roomId}/members`,
+      )
+    ).members;
+  } else {
+    return (
+      await getAuthed<{ members: UserProfile[] }>(`/rooms/${roomId}/members`)
+    ).members;
+  }
 }
 
 /**

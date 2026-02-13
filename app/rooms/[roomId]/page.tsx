@@ -1,11 +1,23 @@
-"use client";
+import { getRoom } from "@/lib/api";
+import { notFound } from "next/navigation";
+import RoomScreen from "@/components/rooms/RoomScreen";
 
-import { useParams } from "next/navigation";
-
-export default function RoomPage() {
+export default async function RoomPage({
+  params,
+}: {
+  params: Promise<{ roomId: string }>;
+}) {
   // Get room ID
-  const { roomId } = useParams<{ roomId: string }>();
+  const { roomId } = await params;
 
-  // Return component
-  return <div>Room ID: {roomId}</div>;
+  // Fetch room
+  const room = await getRoom(roomId, true);
+
+  // If room exists, return room screen
+  if (room) {
+    return <RoomScreen room={room} />;
+  } else {
+    // Otherwise, return not found page
+    return notFound();
+  }
 }
