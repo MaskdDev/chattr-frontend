@@ -9,9 +9,7 @@ import {
 import { PartialRoom } from "@/lib/types";
 import Link from "next/link";
 import { MailCheck, Plus } from "lucide-react";
-import { signOutAndClear } from "@/lib/auth-client";
 import RoomCreateDialog from "@/components/dialogs/RoomCreateDialog";
-import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,7 +21,8 @@ import InviteAcceptDialog from "@/components/dialogs/InviteAcceptDialog";
 import { useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import RoomSidebarLink from "@/components/RoomSidebarLink";
-import { useQueryClient } from "@tanstack/react-query";
+import { useAuth } from "@/app/providers/AuthProvider";
+import RoomSidebarProfile from "@/components/RoomSidebarProfile";
 
 export default function RoomSidebar({
   rooms,
@@ -32,8 +31,8 @@ export default function RoomSidebar({
   rooms?: PartialRoom[];
   activeRoomId?: string;
 }) {
-  // Use query client
-  const queryClient = useQueryClient();
+  // Use auth for user profile
+  const { userProfile } = useAuth();
 
   // Create dialog state
   const [roomCreateOpen, setRoomCreateOpen] = useState(false);
@@ -41,8 +40,8 @@ export default function RoomSidebar({
 
   // Return component
   return (
-    <Sidebar className="bg-slate-950 px-3 py-6" variant="sidebar">
-      <SidebarHeader className="p-0">
+    <Sidebar className="bg-slate-950 pt-6 pb-1" variant="sidebar">
+      <SidebarHeader className="px-3">
         <Link href="/rooms">
           <h1 className="pl-2 font-sans text-5xl font-medium text-cyan-300 sm:text-left">
             Chattr
@@ -50,7 +49,7 @@ export default function RoomSidebar({
         </Link>
       </SidebarHeader>
 
-      <SidebarContent>
+      <SidebarContent className="px-3">
         <div className="mt-5 flex items-center justify-between px-2">
           <h2 className="font-sans text-xl font-semibold text-slate-50">
             Rooms
@@ -91,13 +90,8 @@ export default function RoomSidebar({
             ))}
       </SidebarContent>
 
-      <SidebarFooter>
-        <Button
-          className="w-full bg-slate-50 text-slate-950 hover:bg-slate-50 hover:brightness-75"
-          onClick={() => signOutAndClear(queryClient)}
-        >
-          Sign Out
-        </Button>
+      <SidebarFooter className="px-1.5">
+        <RoomSidebarProfile user={userProfile} />
       </SidebarFooter>
       <RoomCreateDialog open={roomCreateOpen} setOpen={setRoomCreateOpen} />
       <InviteAcceptDialog
