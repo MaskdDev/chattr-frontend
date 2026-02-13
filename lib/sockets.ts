@@ -66,21 +66,26 @@ export class GatewaySocket {
    * Subscribe to messages from a given room ID.
    */
   subscribe(roomId: string, listener: MessageListener) {
-    // Check if room ID is in subscriptions
-    if (this.messageListeners.has(roomId)) {
-      this.messageListeners.get(roomId)?.add(listener);
+    // Check if socket is open
+    if (this.socket?.readyState === WebSocket.OPEN) {
+      if (this.messageListeners.has(roomId)) {
+        // Check if room ID is in subscriptions
+        this.messageListeners.get(roomId)?.add(listener);
+      } else {
+        // Add listener to listeners
+        this.messageListeners.set(roomId, new Set([listener]));
+
+        // Create subscribe request
+        const subscribeRequest: RoomSubscribeSocketMessage = {
+          type: "subscribe",
+          roomId,
+        };
+
+        // Send subscribe request
+        this.sendMessage(subscribeRequest);
+      }
     } else {
-      // Add listener to listeners
-      this.messageListeners.set(roomId, new Set([listener]));
-
-      // Create subscribe request
-      const subscribeRequest: RoomSubscribeSocketMessage = {
-        type: "subscribe",
-        roomId,
-      };
-
-      // Send subscribe request
-      this.sendMessage(subscribeRequest);
+      setTimeout(() => this.subscribe(roomId, listener), 500);
     }
   }
 
@@ -88,25 +93,30 @@ export class GatewaySocket {
    * Unsubscribe a listener from messages from a given room ID.
    */
   unsubscribe(roomId: string, listener: MessageListener) {
-    // Get listener set
-    const listenerSet = this.messageListeners.get(roomId);
+    // Check if socket is open
+    if (this.socket?.readyState === WebSocket.OPEN) {
+      // Get listener set
+      const listenerSet = this.messageListeners.get(roomId);
 
-    // Check if listener set exists
-    if (listenerSet !== undefined) {
-      // Delete listener from listener set, if it exists.
-      listenerSet.delete(listener);
+      // Check if listener set exists
+      if (listenerSet !== undefined) {
+        // Delete listener from listener set, if it exists.
+        listenerSet.delete(listener);
 
-      // Check if listener set is now empty
-      if (listenerSet.size === 0) {
-        // Create unsubscribe request
-        const unsubRequest: RoomUnsubscribeSocketMessage = {
-          type: "unsubscribe",
-          roomId: roomId,
-        };
+        // Check if listener set is now empty
+        if (listenerSet.size === 0) {
+          // Create unsubscribe request
+          const unsubRequest: RoomUnsubscribeSocketMessage = {
+            type: "unsubscribe",
+            roomId: roomId,
+          };
 
-        // Send unsubscribe request
-        this.sendMessage(unsubRequest);
+          // Send unsubscribe request
+          this.sendMessage(unsubRequest);
+        }
       }
+    } else {
+      setTimeout(() => this.unsubscribe(roomId, listener), 500);
     }
   }
 
