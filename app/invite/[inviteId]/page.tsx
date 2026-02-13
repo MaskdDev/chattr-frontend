@@ -1,6 +1,34 @@
 import { getInvite } from "@/lib/api";
 import { notFound } from "next/navigation";
 import InviteScreen from "@/components/InviteScreen";
+import { Metadata } from "next";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ inviteId: string }>;
+}): Promise<Metadata> {
+  // Get invite ID
+  const { inviteId } = await params;
+
+  // Fetch invite
+  const invite = await getInvite(inviteId);
+
+  // Return metadata
+  return {
+    title: "Chattr - A simple chatting app!",
+    description:
+      invite.creator !== null
+        ? `${invite.creator} has invited you to join "${invite.room.name}"!`
+        : `You've been invited to join "${invite.room.name}"!`,
+    openGraph: {
+      images: ["/embed.png"],
+    },
+    twitter: {
+      card: "summary_large_image",
+    },
+  };
+}
 
 export default async function InvitePage({
   params,
