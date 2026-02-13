@@ -5,6 +5,7 @@ import { useEffect, useMemo, useRef } from "react";
 import RoomMessage from "@/components/rooms/RoomMessage";
 import { gatewaySocket } from "@/lib/sockets";
 import { addMessageToQueryCache } from "@/lib/query";
+import RoomMessagesLoading from "@/components/rooms/RoomMessagesLoading";
 
 export default function RoomMessages({ room }: { room: Room }) {
   // Use query client
@@ -29,7 +30,7 @@ export default function RoomMessages({ room }: { room: Room }) {
   }, [room, queryClient]);
 
   // Get messages
-  const { data: messagePages } = useInfiniteQuery({
+  const { data: messagePages, isPending } = useInfiniteQuery({
     queryKey: ["messages", room.id],
     queryFn: async ({ pageParam }: { pageParam: string }) =>
       getMessages(room.id, 25, pageParam === "start" ? undefined : pageParam),
@@ -65,9 +66,13 @@ export default function RoomMessages({ room }: { room: Room }) {
       className="h-full w-full overflow-y-scroll rounded-xl border-2 border-slate-600 bg-white py-2"
       ref={messageContainer}
     >
-      {messages.map((message) => (
-        <RoomMessage message={message} key={message.id} />
-      ))}
+      {!isPending ? (
+        messages.map((message) => (
+          <RoomMessage message={message} key={message.id} />
+        ))
+      ) : (
+        <RoomMessagesLoading />
+      )}
     </div>
   );
 }
