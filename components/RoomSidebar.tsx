@@ -39,9 +39,11 @@ export default function RoomSidebar({
   return (
     <Sidebar className="bg-slate-950 px-3 py-6" variant="sidebar">
       <SidebarHeader className="p-0">
-        <h1 className="pl-2 font-sans text-5xl font-medium text-cyan-300 sm:text-left">
-          Chattr
-        </h1>
+        <Link href="/rooms">
+          <h1 className="pl-2 font-sans text-5xl font-medium text-cyan-300 sm:text-left">
+            Chattr
+          </h1>
+        </Link>
       </SidebarHeader>
 
       <SidebarContent>
