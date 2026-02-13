@@ -7,7 +7,7 @@ import {
 import { gatewayUrl } from "@/lib/utils";
 
 // Create listener types
-type MessageListener = (message: Message) => void;
+type MessageListener = (message: Message) => void | Promise<void>;
 type EventListener = () => void;
 type EventType = "connected" | "reconnected" | "reconnecting";
 
@@ -111,8 +111,12 @@ export class GatewaySocket {
             roomId: roomId,
           };
 
-          // Send unsubscribe request
-          this.sendMessage(unsubRequest);
+          // Send unsubscribe request in 10 seconds, if there are still no listeners
+          setTimeout(() => {
+            if (!this.messageListeners.get(roomId)?.size) {
+              this.sendMessage(unsubRequest);
+            }
+          }, 10000);
         }
       }
     } else {

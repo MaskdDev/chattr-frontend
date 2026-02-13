@@ -27,19 +27,13 @@ export function addMessageToQueryCache(
         return currentMessages;
       }
 
-      // Otherwise, insert message into first page
-      currentMessages.pages[0].unshift(message);
-
-      // Return modified messages
+      // Insert message into first page and return modified messages
       return {
         ...currentMessages,
-        pages: currentMessages.pages.map((page, index) => {
-          if (index === 0) {
-            return page.slice();
-          } else {
-            return page;
-          }
-        }),
+        pages: [
+          [message, ...currentMessages.pages[0]],
+          ...currentMessages.pages.slice(1),
+        ],
       };
     },
   );
