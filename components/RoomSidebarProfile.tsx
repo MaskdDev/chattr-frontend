@@ -10,7 +10,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { LucideLogOut, EllipsisVertical } from "lucide-react";
+import { LucideLogOut, EllipsisVertical, Settings } from "lucide-react";
 import { SidebarMenuButton, useSidebar } from "@/components/ui/sidebar";
 import { UserProfile } from "@/lib/types";
 import { cn, getInitials } from "@/lib/utils";
@@ -83,7 +83,10 @@ export default function RoomSidebarProfile({
 
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem>Account</DropdownMenuItem>
+          <DropdownMenuItem>
+            <Settings />
+            Account Settings
+          </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={() => signOutAndClear(queryClient)}>
