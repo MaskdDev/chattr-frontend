@@ -2,6 +2,7 @@ import { Room } from "@/lib/types";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { getMessages } from "@/lib/api";
 import { useMemo } from "react";
+import RoomMessage from "@/components/rooms/RoomMessage";
 
 export default function RoomMessages({ room }: { room: Room }) {
   // Get messages
@@ -30,6 +31,10 @@ export default function RoomMessages({ room }: { room: Room }) {
 
   // Return messages container
   return (
-    <div className="h-full w-full overflow-y-scroll rounded-xl border-2 border-slate-600 bg-white py-2"></div>
+    <div className="h-full w-full overflow-y-scroll rounded-xl border-2 border-slate-600 bg-white py-2">
+      {messages.map((message) => (
+        <RoomMessage message={message} key={message.id} />
+      ))}
+    </div>
   );
 }
