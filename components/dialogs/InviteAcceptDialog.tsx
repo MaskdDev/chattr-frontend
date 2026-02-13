@@ -22,6 +22,7 @@ import { acceptInvite } from "@/lib/api";
 import { AxiosError } from "axios";
 import { Spinner } from "@/components/ui/spinner";
 import { useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 
 // Create invite accept form schema
 const inviteAcceptFormSchema = z.object({
@@ -40,8 +41,9 @@ export default function InviteAcceptDialog({
   // Create form lock state and error
   const [formLock, setFormLock] = useState(false);
 
-  // Use query client
+  // Use query client and router
   const queryClient = useQueryClient();
+  const router = useRouter();
 
   // Create TanStack form
   const form = useForm({
@@ -58,11 +60,14 @@ export default function InviteAcceptDialog({
 
         try {
           // Try accepting invite and refetch rooms
-          await acceptInvite(value.inviteCode);
+          const invite = await acceptInvite(value.inviteCode);
           await queryClient.refetchQueries({ queryKey: ["rooms"] });
 
           // Close modal
           setOpen(false);
+
+          // Open newly created room
+          router.push(`/rooms/${invite.room.id}`);
         } catch (e) {
           if (e instanceof AxiosError) {
             switch (e.status) {

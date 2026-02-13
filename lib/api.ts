@@ -181,8 +181,8 @@ export async function getInvite(inviteCode: string): Promise<Invite> {
 /**
  * Accept an invite with the given code.
  */
-export async function acceptInvite(inviteCode: string): Promise<void> {
-  return await postAuthed<void>(`/invites/${inviteCode}`, {});
+export async function acceptInvite(inviteCode: string): Promise<Invite> {
+  return await postAuthed<Invite>(`/invites/${inviteCode}`, {});
 }
 /**
  * Delete the invite with the specified code.

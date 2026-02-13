@@ -22,6 +22,7 @@ import * as z from "zod";
 import { createRoom } from "@/lib/api";
 import { useQueryClient } from "@tanstack/react-query";
 import { Spinner } from "@/components/ui/spinner";
+import { useRouter } from "next/navigation";
 
 // Create room create form schema
 const roomCreateFormSchema = z.object({
@@ -44,8 +45,9 @@ export default function RoomCreateDialog({
   // Create form lock state
   const [formLock, setFormLock] = useState(false);
 
-  // Use query client
+  // Use query client and router
   const queryClient = useQueryClient();
+  const router = useRouter();
 
   // Create TanStack form
   const form = useForm({
@@ -63,11 +65,14 @@ export default function RoomCreateDialog({
 
         try {
           // Send room creation request and refetch rooms
-          await createRoom(value);
+          const room = await createRoom(value);
           await queryClient.refetchQueries({ queryKey: ["rooms"] });
 
           // Close modal
           setOpen(false);
+
+          // Open newly created room
+          router.push(`/rooms/${room.id}`);
         } catch (e) {
           alert("Error creating room. Please try again later.");
         }
