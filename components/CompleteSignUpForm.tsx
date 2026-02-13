@@ -41,7 +41,7 @@ const completeSignupFormSchema = z
         username: data.username,
       });
 
-      // If response is available, return true
+      // Return whether username is available.
       return !!response?.available;
     },
     {

@@ -17,7 +17,7 @@ import Link from "next/link";
 import * as z from "zod";
 import { useForm } from "@tanstack/react-form";
 import { authClient } from "@/lib/auth-client";
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { KeyIcon } from "lucide-react";
 import { useAuth } from "@/app/providers/AuthProvider";
 
@@ -39,8 +39,9 @@ export default function SignInForm({
   const auth = useAuth();
   const router = useRouter();
 
-  // Create form lock state
+  // Create form lock state and error
   const [formLock, setFormLock] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   // Create TanStack form
   const form = useForm({
@@ -70,10 +71,10 @@ export default function SignInForm({
               // Redirect to callback URL
               router.push(callbackUrl);
             },
-            onError: (ctx) => {
+            onError: (_) => {
               // Re-enable form and send alert
               setFormLock(false);
-              alert(ctx.error.message);
+              setError("Invalid username or password entered.");
             },
           },
         );
@@ -142,7 +143,14 @@ export default function SignInForm({
                   aria-invalid={isInvalid}
                   autoComplete="off"
                 />
-                {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                {(isInvalid || error) && (
+                  <FieldError
+                    errors={[
+                      ...field.state.meta.errors,
+                      { message: error ?? undefined },
+                    ]}
+                  />
+                )}
               </Field>
             );
           }}

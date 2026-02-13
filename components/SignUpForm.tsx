@@ -17,7 +17,7 @@ import Link from "next/link";
 import * as z from "zod";
 import { useForm } from "@tanstack/react-form";
 import { authClient } from "@/lib/auth-client";
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/providers/AuthProvider";
 
 // Create signup form schema
@@ -52,7 +52,15 @@ const signupFormSchema = z
     path: ["confirmPassword"],
   })
   .refine(
-    (data) => authClient.isUsernameAvailable({ username: data.username }),
+    async (data) => {
+      // Check if username is available
+      const { data: response } = await authClient.isUsernameAvailable({
+        username: data.username,
+      });
+
+      // Return whether username is available
+      return !!response?.available;
+    },
     {
       error: "Username already taken.",
       path: ["username"],
@@ -85,7 +93,7 @@ export default function SignUpForm({
       confirmPassword: "",
     },
     validators: {
-      onSubmit: signupFormSchema,
+      onSubmitAsync: signupFormSchema,
     },
     onSubmit: async ({ value }) => {
       if (!formLock) {

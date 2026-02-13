@@ -1,9 +1,6 @@
 "use client";
 
-import { ArrowLeft } from "lucide-react";
 import styles from "@/styles/heropatterns.module.css";
-import SignUpForm from "@/components/SignUpForm";
-import Link from "next/link";
 import { redirect, useSearchParams } from "next/navigation";
 import { useAuth } from "@/app/providers/AuthProvider";
 import CompleteSignUpForm from "@/components/CompleteSignUpForm";
