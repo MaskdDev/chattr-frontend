@@ -63,11 +63,14 @@ export default function InviteAcceptDialog({
           const invite = await acceptInvite(value.inviteCode);
           await queryClient.refetchQueries({ queryKey: ["rooms"] });
 
+          // Open newly created room
+          router.push(`/rooms/${invite.room.id}`);
+
           // Close modal
           setOpen(false);
 
-          // Open newly created room
-          router.push(`/rooms/${invite.room.id}`);
+          // Reset form
+          setTimeout(() => form.reset(), 250);
         } catch (e) {
           if (e instanceof AxiosError) {
             switch (e.status) {

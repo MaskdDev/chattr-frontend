@@ -68,11 +68,14 @@ export default function RoomCreateDialog({
           const room = await createRoom(value);
           await queryClient.refetchQueries({ queryKey: ["rooms"] });
 
+          // Open newly created room
+          router.push(`/rooms/${room.id}`);
+
           // Close modal
           setOpen(false);
 
-          // Open newly created room
-          router.push(`/rooms/${room.id}`);
+          // Reset form
+          setTimeout(() => form.reset(), 250);
         } catch (e) {
           alert("Error creating room. Please try again later.");
         }
