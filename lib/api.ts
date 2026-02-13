@@ -197,8 +197,8 @@ export async function deleteInvite(inviteCode: string): Promise<void> {
 export async function getMessages(
   roomId: string,
   limit: number = 25,
-  before?: string,
-  after?: string,
+  before?: string | null,
+  after?: string | null,
 ): Promise<Message[]> {
   // Construct query string
   let queryString = `?limit=${limit}`;
