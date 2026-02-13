@@ -63,7 +63,7 @@ export default function RoomMessages({ room }: { room: Room }) {
   // Return messages container
   return (
     <div
-      className="h-full w-full overflow-y-scroll rounded-xl border-2 border-slate-600 bg-white py-2"
+      className="h-full w-full overflow-x-hidden overflow-y-scroll rounded-xl border-2 border-slate-600 bg-white py-2"
       ref={messageContainer}
     >
       {!isPending ? (

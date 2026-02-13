@@ -98,6 +98,7 @@ export default function RoomMessageBox({
         onChange={(e) => setMessage(e.target.value)}
         placeholder="Send a message"
         disabled={disabled}
+        maxLength={1000}
       />
       <button type="submit" aria-label="Send message" disabled={disabled}>
         <SendHorizontal className="text-slate-900" />

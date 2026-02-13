@@ -35,6 +35,7 @@ export default function RoomMessage({ message }: { message: Message }) {
 
         <div
           className={cn(
+            "min-w-0",
             isPending ? "opacity-60" : "",
             isError ? "text-red-400" : "",
           )}
@@ -62,7 +63,7 @@ export default function RoomMessage({ message }: { message: Message }) {
               </span>
             )}
           </div>
-          <div className="text-base">{message.content}</div>
+          <div className="text-base wrap-break-word">{message.content}</div>
         </div>
       </div>
     </div>
