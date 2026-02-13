@@ -1,4 +1,4 @@
-import { PartialRoom } from "@/lib/types";
+import { PartialInvite, PartialRoom } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { Hash, UserPlus } from "lucide-react";
@@ -7,13 +7,18 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { createInvite } from "@/lib/api";
 
 export default function RoomSidebarLink({
   room,
   activeRoomId,
+  setInvite,
+  openInviteModal,
 }: {
   room: PartialRoom;
   activeRoomId: string | undefined;
+  setInvite: (invite: PartialInvite) => void;
+  openInviteModal: () => void;
 }) {
   // Check whether room is active
   const activeRoom = room.id === activeRoomId;
@@ -39,7 +44,20 @@ export default function RoomSidebarLink({
       >
         <Tooltip>
           <TooltipTrigger asChild>
-            <button className="cursor-pointer hover:brightness-75">
+            <button
+              className="cursor-pointer hover:brightness-75"
+              onClick={async () => {
+                // Create invite code
+                const invite = await createInvite(room.id, {
+                  expires: null,
+                  maxUses: null,
+                });
+
+                // Set invite and open invite created modal
+                setInvite(invite);
+                openInviteModal();
+              }}
+            >
               <UserPlus className="size-4.5" />
             </button>
           </TooltipTrigger>

@@ -168,7 +168,7 @@ export async function createInvite(
   roomId: string,
   body: InviteCreate,
 ): Promise<PartialInvite> {
-  return await postAuthed<PartialInvite>(`/rooms/${roomId}`, body);
+  return await postAuthed<PartialInvite>(`/rooms/${roomId}/invites`, body);
 }
 
 /**

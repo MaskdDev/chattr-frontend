@@ -6,7 +6,7 @@ import {
   SidebarFooter,
   SidebarHeader,
 } from "@/components/ui/sidebar";
-import { PartialRoom } from "@/lib/types";
+import { Invite, PartialInvite, PartialRoom } from "@/lib/types";
 import Link from "next/link";
 import { MailCheck, Plus } from "lucide-react";
 import RoomCreateDialog from "@/components/dialogs/RoomCreateDialog";
@@ -23,6 +23,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import RoomSidebarLink from "@/components/RoomSidebarLink";
 import { useAuth } from "@/app/providers/AuthProvider";
 import RoomSidebarProfile from "@/components/RoomSidebarProfile";
+import InviteCreatedDialog from "@/components/dialogs/InviteCreatedDialog";
 
 export default function RoomSidebar({
   rooms,
@@ -37,6 +38,10 @@ export default function RoomSidebar({
   // Create dialog state
   const [roomCreateOpen, setRoomCreateOpen] = useState(false);
   const [acceptInviteOpen, setAcceptInviteOpen] = useState(false);
+  const [inviteCreatedOpen, setInviteCreatedOpen] = useState(false);
+
+  // Create invite code state
+  const [invite, setInvite] = useState<PartialInvite | null>(null);
 
   // Return component
   return (
@@ -79,6 +84,8 @@ export default function RoomSidebar({
               <RoomSidebarLink
                 room={room}
                 activeRoomId={activeRoomId}
+                setInvite={setInvite}
+                openInviteModal={() => setInviteCreatedOpen(true)}
                 key={room.id}
               />
             ))
@@ -97,6 +104,11 @@ export default function RoomSidebar({
       <InviteAcceptDialog
         open={acceptInviteOpen}
         setOpen={setAcceptInviteOpen}
+      />
+      <InviteCreatedDialog
+        open={inviteCreatedOpen}
+        setOpen={setInviteCreatedOpen}
+        invite={invite}
       />
     </Sidebar>
   );
