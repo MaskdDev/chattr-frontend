@@ -65,7 +65,7 @@ export type Invite = {
   creator: UserProfile | null;
   uses: number;
   maxUses: number | null;
-  expires: Date | null;
+  expires: string | null;
 };
 
 /**
@@ -77,7 +77,7 @@ export type PartialInvite = {
   creatorId: string | null;
   uses: number;
   maxUses: number | null;
-  expires: Date | null;
+  expires: string | null;
 };
 
 /**
@@ -89,7 +89,7 @@ export type InviteRow = {
   creator_id: string;
   uses: number;
   max_uses: number | null;
-  expires: Date | null;
+  expires: string | null;
 };
 
 /**
@@ -97,7 +97,7 @@ export type InviteRow = {
  */
 export type InviteCreate = {
   maxUses: number | null;
-  expires: Date | null;
+  expires: string | null;
 };
 
 /**
@@ -108,8 +108,8 @@ export type Message = {
   roomId: string;
   author: UserProfile | null;
   content: string;
-  timestamp: Date;
-  editedTimestamp: Date | null;
+  timestamp: string;
+  editedTimestamp: string | null;
 };
 
 /**
@@ -120,8 +120,8 @@ export type MessageRow = {
   room_id: string;
   author_id: string | null;
   content: string;
-  timestamp: Date;
-  edit_timestamp: Date;
+  timestamp: string;
+  edit_timestamp: string;
 };
 
 /**

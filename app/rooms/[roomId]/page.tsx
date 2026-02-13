@@ -1,14 +1,10 @@
 "use client";
 
-import { use } from "react";
+import { useParams } from "next/navigation";
 
-export default function RoomPage({
-  params,
-}: {
-  params: Promise<{ roomId: string }>;
-}) {
+export default function RoomPage() {
   // Get room ID
-  const { roomId } = use(params);
+  const { roomId } = useParams<{ roomId: string }>();
 
   // Return component
   return <div>Room ID: {roomId}</div>;
