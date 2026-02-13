@@ -222,9 +222,9 @@ export async function getMessages(
  */
 export async function postMessage(
   roomId: string,
-  content: string,
+  message: MessageCreate,
 ): Promise<Message> {
-  return await postAuthed<Message>(`/rooms/${roomId}/messages`, { content });
+  return await postAuthed<Message>(`/rooms/${roomId}/messages`, message);
 }
 
 /**

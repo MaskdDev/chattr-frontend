@@ -105,6 +105,20 @@ export type InviteCreate = {
  */
 export type Message = {
   id: string;
+  nonce?: string;
+  roomId: string;
+  author: UserProfile | null;
+  content: string;
+  timestamp: string;
+  editedTimestamp: string | null;
+};
+
+/**
+ * A type representing a new message just sent in a room.
+ */
+export type NewMessage = {
+  id: string;
+  nonce?: string;
   roomId: string;
   author: UserProfile | null;
   content: string;
@@ -129,6 +143,7 @@ export type MessageRow = {
  */
 export type MessageCreate = {
   content: string;
+  nonce?: string;
 };
 
 /**

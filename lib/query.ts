@@ -15,10 +15,13 @@ export function addMessageToQueryCache(
       // If current messages don't exist, return
       if (!currentMessages) return currentMessages;
 
-      // Check if message is already rendered
+      // Check if message is already rendered (using both ID and nonce, if present)
       if (
         currentMessages.pages.some((page) =>
-          page.some((m: Message) => m.id === message.id),
+          page.some(
+            (m: Message) =>
+              m.id === message.id || (m.nonce && m.nonce === message.nonce),
+          ),
         )
       ) {
         return currentMessages;

@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { SendHorizontal } from "lucide-react";
-import { Message, Room } from "@/lib/types";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { Message, MessageCreate, Room } from "@/lib/types";
+import { useMutation } from "@tanstack/react-query";
 import { postMessage } from "@/lib/api";
 import { useAuth } from "@/app/providers/AuthProvider";
 import {
@@ -11,6 +11,7 @@ import {
   errorPendingMessage,
   replacePendingMessage,
 } from "@/lib/query";
+import { generateNonce } from "@/lib/utils";
 
 export default function RoomMessageBox({
   room,
@@ -19,33 +20,30 @@ export default function RoomMessageBox({
   room: Room;
   disabled: boolean;
 }) {
-  // Use query client
-  const queryClient = useQueryClient();
-
   // Use auth for user profile
   const { userProfile } = useAuth();
 
   // Create message mutation query
   const messageMutation = useMutation({
-    mutationFn: async (messageContent: string) => {
-      return postMessage(room.id, messageContent);
+    mutationFn: async (message: MessageCreate) => {
+      return postMessage(room.id, message);
     },
-    onMutate: async (messageContent) => {
+    onMutate: async (message, { client: queryClient }) => {
       // Cancel queries
       await queryClient.cancelQueries({ queryKey: ["messages", room.id] });
 
       // Get current timestamp
       const timestamp = new Date();
 
-      // Create temporary message ID
+      // Create temporary message ID and nonce
       const temporaryId = `pending-${timestamp.valueOf()}`;
 
       // Create pending message
       const pendingMessage: Message = {
+        ...message,
         id: temporaryId,
         roomId: room.id,
         author: userProfile,
-        content: messageContent,
         timestamp: timestamp.toISOString(),
         editedTimestamp: null,
       };
@@ -56,11 +54,11 @@ export default function RoomMessageBox({
       // Return temporary ID
       return { temporaryId };
     },
-    onSuccess: (message, variables, context) => {
+    onSuccess: (message, _, context, { client: queryClient }) => {
       // Replace pending message with complete message
       replacePendingMessage(queryClient, room.id, message, context.temporaryId);
     },
-    onError: (message, variables, context) => {
+    onError: (error, _, context, { client: queryClient }) => {
       // Replace pending message with error message, if context is present
       if (context) {
         errorPendingMessage(queryClient, room.id, context.temporaryId);
@@ -81,7 +79,14 @@ export default function RoomMessageBox({
 
         // Check if message is valid
         if (message.trim().length > 0) {
-          messageMutation.mutate(message);
+          // Create message request
+          const messageCreate: MessageCreate = {
+            content: message,
+            nonce: generateNonce(),
+          };
+
+          // Send message and reset message box
+          messageMutation.mutate(messageCreate);
           setMessage("");
         }
       }}

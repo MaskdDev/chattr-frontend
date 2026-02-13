@@ -1,7 +1,7 @@
 import { Message, Room } from "@/lib/types";
 import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 import { getMessages } from "@/lib/api";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import RoomMessage from "@/components/rooms/RoomMessage";
 import { gatewaySocket } from "@/lib/sockets";
 import { addMessageToQueryCache } from "@/lib/query";
@@ -9,6 +9,9 @@ import { addMessageToQueryCache } from "@/lib/query";
 export default function RoomMessages({ room }: { room: Room }) {
   // Use query client
   const queryClient = useQueryClient();
+
+  // Create reference to messages container
+  const messageContainer = useRef<HTMLDivElement>(null);
 
   // Subscribe to messages from room
   useEffect(() => {
@@ -49,9 +52,19 @@ export default function RoomMessages({ room }: { room: Room }) {
       .flatMap((page) => page.slice().reverse());
   }, [messagePages]);
 
+  // Scroll to the bottom of messages whenever a new message is added
+  useEffect(() => {
+    messageContainer.current?.lastElementChild?.scrollIntoView({
+      behavior: "instant",
+    });
+  }, [messages]);
+
   // Return messages container
   return (
-    <div className="h-full w-full overflow-y-scroll rounded-xl border-2 border-slate-600 bg-white py-2">
+    <div
+      className="h-full w-full overflow-y-scroll rounded-xl border-2 border-slate-600 bg-white py-2"
+      ref={messageContainer}
+    >
       {messages.map((message) => (
         <RoomMessage message={message} key={message.id} />
       ))}

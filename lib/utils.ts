@@ -58,3 +58,10 @@ export function getInitials(author: string) {
     return (splitName[0][0] + splitName[1][0]).toUpperCase();
   }
 }
+
+/**
+ * Generate a 128 bit nonce for an optimistic resource send.
+ */
+export function generateNonce(): string {
+  return crypto.randomUUID();
+}
