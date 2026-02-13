@@ -11,11 +11,16 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 
 export default function RoomsLayout({ children }: { children: ReactNode }) {
   // Get auth
-  const { session } = useAuth();
+  const { session, userProfile } = useAuth();
 
   // Redirect user to sign in page if not logged in
   if (!session) {
     redirect("/sign-in");
+  }
+
+  // Redirect user to complete sign up page, if username and display name aren't present
+  if (userProfile && !userProfile.username && !userProfile.displayName) {
+    redirect("/complete-sign-up");
   }
 
   // Get room ID, if present
