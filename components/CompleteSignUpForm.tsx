@@ -177,7 +177,7 @@ export default function CompleteSignUpForm({
         </form.Field>
 
         <Field className="gap-2">
-          <Button type="submit">Complete Setup</Button>
+          <Button type="submit">Complete Sign Up</Button>
         </Field>
       </FieldGroup>
     </form>

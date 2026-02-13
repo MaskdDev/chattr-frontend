@@ -169,7 +169,7 @@ export default function SignInForm({
               await authClient.signIn.social({
                 provider: "github",
                 callbackURL: `${frontendUrl()}${callbackUrl}`,
-                newUserCallbackURL: `${frontendUrl()}/complete-sign-up`,
+                newUserCallbackURL: `${frontendUrl()}/complete-sign-up?callbackUrl=${encodeURIComponent(callbackUrl)}`,
               });
             }}
           >
@@ -183,7 +183,7 @@ export default function SignInForm({
               await authClient.signIn.social({
                 provider: "google",
                 callbackURL: `${frontendUrl()}/${callbackUrl}`,
-                newUserCallbackURL: `${frontendUrl()}/complete-sign-up`,
+                newUserCallbackURL: `${frontendUrl()}/complete-sign-up?callbackUrl=${encodeURIComponent(callbackUrl)}`,
               });
             }}
           >
