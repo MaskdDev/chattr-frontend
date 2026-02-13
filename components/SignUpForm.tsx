@@ -50,7 +50,14 @@ const signupFormSchema = z
   .refine((data) => data.password === data.confirmPassword, {
     error: "Passwords don't match.",
     path: ["confirmPassword"],
-  });
+  })
+  .refine(
+    (data) => authClient.isUsernameAvailable({ username: data.username }),
+    {
+      error: "Username already taken.",
+      path: ["username"],
+    },
+  );
 
 export default function SignUpForm({
   className,
