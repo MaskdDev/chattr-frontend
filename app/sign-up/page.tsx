@@ -4,14 +4,18 @@ import { ArrowLeft } from "lucide-react";
 import styles from "@/styles/heropatterns.module.css";
 import SignUpForm from "@/components/SignUpForm";
 import Link from "next/link";
-import { redirect } from "next/navigation";
+import { redirect, useSearchParams } from "next/navigation";
 import { useAuth } from "@/app/providers/AuthProvider";
 
 export default function SignUpPage() {
-  // Use auth
+  // Use auth and search params
   const { session } = useAuth();
+  const params = useSearchParams();
 
-  // If user is logged in, redirect to dashboard
+  // Get callback URL, or use default /rooms
+  const callbackUrl = params.get("callbackUrl") ?? "/rooms";
+
+  // If user is logged in, redirect to rooms page
   if (session !== null) {
     redirect("/rooms");
   }
@@ -31,7 +35,7 @@ export default function SignUpPage() {
 
         <div className="flex flex-1 items-center justify-center">
           <div className="w-full max-w-xs">
-            <SignUpForm />
+            <SignUpForm callbackUrl={callbackUrl} />
           </div>
         </div>
       </div>

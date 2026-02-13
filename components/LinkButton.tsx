@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
-export default function HomePageButton({
+export default function LinkButton({
   href,
   text,
 }: {

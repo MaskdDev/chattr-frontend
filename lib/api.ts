@@ -157,8 +157,7 @@ export async function removeMember(
  * Get the invites for a room.
  */
 export async function getInvites(roomId: string): Promise<Invite[]> {
-  return (await getAuthed<{ invites: Invite[] }>(`/rooms/${roomId}/invites`))
-    .invites;
+  return (await get<{ invites: Invite[] }>(`/rooms/${roomId}/invites`)).invites;
 }
 
 /**

@@ -5,13 +5,17 @@ import styles from "@/styles/heropatterns.module.css";
 import Link from "next/link";
 import SignInForm from "@/components/SignInForm";
 import { useAuth } from "@/app/providers/AuthProvider";
-import { redirect } from "next/navigation";
+import { redirect, useSearchParams } from "next/navigation";
 
 export default function SignInPage() {
-  // Use auth
+  // Use auth and search params
   const { session } = useAuth();
+  const params = useSearchParams();
 
-  // If user is logged in, redirect to dashboard
+  // Get callback URL, or use default /rooms
+  const callbackUrl = params.get("callbackUrl") ?? "/rooms";
+
+  // If user is logged in, redirect to rooms page
   if (session !== null) {
     redirect("/rooms");
   }
@@ -31,7 +35,7 @@ export default function SignInPage() {
 
         <div className="flex flex-1 items-center justify-center">
           <div className="w-full max-w-xs">
-            <SignInForm />
+            <SignInForm callbackUrl={callbackUrl} />
           </div>
         </div>
       </div>

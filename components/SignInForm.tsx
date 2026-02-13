@@ -17,7 +17,7 @@ import Link from "next/link";
 import * as z from "zod";
 import { useForm } from "@tanstack/react-form";
 import { authClient } from "@/lib/auth-client";
-import { redirect } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { KeyIcon } from "lucide-react";
 import { useAuth } from "@/app/providers/AuthProvider";
 
@@ -29,10 +29,15 @@ const signinFormSchema = z.object({
 
 export default function SignInForm({
   className,
+  callbackUrl,
   ...props
-}: React.ComponentProps<"form">) {
-  // Use auth
+}: {
+  className?: string;
+  callbackUrl: string;
+}) {
+  // Use auth and router
   const auth = useAuth();
+  const router = useRouter();
 
   // Create form lock state
   const [formLock, setFormLock] = useState(false);
@@ -62,8 +67,8 @@ export default function SignInForm({
               // Refetch auth state
               await auth.refetch();
 
-              // Redirect to dashboard
-              redirect("/rooms");
+              // Redirect to callback URL
+              router.push(callbackUrl);
             },
             onError: (ctx) => {
               // Re-enable form and send alert
@@ -155,7 +160,7 @@ export default function SignInForm({
             onClick={async () => {
               await authClient.signIn.social({
                 provider: "github",
-                callbackURL: `${frontendUrl()}/rooms`,
+                callbackURL: `${frontendUrl()}${callbackUrl}`,
                 newUserCallbackURL: `${frontendUrl()}/complete-sign-up`,
               });
             }}
@@ -169,7 +174,7 @@ export default function SignInForm({
             onClick={async () => {
               await authClient.signIn.social({
                 provider: "google",
-                callbackURL: `${frontendUrl()}/rooms`,
+                callbackURL: `${frontendUrl()}/${callbackUrl}`,
                 newUserCallbackURL: `${frontendUrl()}/complete-sign-up`,
               });
             }}
@@ -184,8 +189,8 @@ export default function SignInForm({
               authClient.signIn.passkey({
                 fetchOptions: {
                   onSuccess() {
-                    // Redirect to dashboard
-                    redirect("/rooms");
+                    // Redirect to callback URL
+                    router.push(callbackUrl);
                   },
                   onError() {
                     alert(
@@ -200,7 +205,12 @@ export default function SignInForm({
             Sign in with Passkey
           </Button>
           <FieldDescription className="px-6 text-center">
-            Don&#39;t have an account? <Link href="/sign-up">Sign up</Link>
+            Don&#39;t have an account?{" "}
+            <Link
+              href={`/sign-up?callbackUrl=${encodeURIComponent(callbackUrl)}`}
+            >
+              Sign up
+            </Link>
           </FieldDescription>
         </Field>
       </FieldGroup>

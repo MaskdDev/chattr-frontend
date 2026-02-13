@@ -152,3 +152,11 @@ export type MessageCreate = {
 export type MessagePatch = {
   content: string;
 };
+
+/**
+ * A type representing an API error.
+ */
+export type ApiError = {
+  code: number;
+  message: string;
+};

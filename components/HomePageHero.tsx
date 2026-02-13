@@ -1,6 +1,6 @@
 import Image from "next/image";
 import SourceDropdown from "@/components/SourceDropdown";
-import HomePageButton from "@/components/HomePageButton";
+import LinkButton from "@/components/LinkButton";
 import CentredGradientContainer from "@/components/CentredGradientContainer";
 
 export default function HomePageHero() {
@@ -27,8 +27,8 @@ export default function HomePageHero() {
         </div>
 
         <div className="mt-3 flex w-full flex-col flex-wrap items-center justify-center gap-2 px-10 sm:mt-7 sm:flex-row sm:gap-5">
-          <HomePageButton href="/sign-up" text="Sign Up" />
-          <HomePageButton href="/sign-in" text="Sign In" />
+          <LinkButton href="/sign-up" text="Sign Up" />
+          <LinkButton href="/sign-in" text="Sign In" />
           <SourceDropdown />
         </div>
       </div>

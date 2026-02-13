@@ -17,7 +17,7 @@ import Link from "next/link";
 import * as z from "zod";
 import { useForm } from "@tanstack/react-form";
 import { authClient } from "@/lib/auth-client";
-import { redirect } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { useAuth } from "@/app/providers/AuthProvider";
 
 // Create signup form schema
@@ -54,10 +54,15 @@ const signupFormSchema = z
 
 export default function SignUpForm({
   className,
+  callbackUrl,
   ...props
-}: React.ComponentProps<"form">) {
-  // Use auth
+}: {
+  className?: string;
+  callbackUrl: string;
+}) {
+  // Use auth and router
   const auth = useAuth();
+  const router = useRouter();
 
   // Create form lock state
   const [formLock, setFormLock] = useState(false);
@@ -94,8 +99,8 @@ export default function SignUpForm({
               // Refetch auth state
               await auth.refetch();
 
-              // Redirect to dashboard
-              redirect("/rooms");
+              // Redirect to callback URL
+              router.push(callbackUrl);
             },
             onError: (ctx) => {
               // Re-enable form and send alert
@@ -293,7 +298,7 @@ export default function SignUpForm({
             onClick={async () => {
               await authClient.signIn.social({
                 provider: "github",
-                callbackURL: `${frontendUrl()}/rooms`,
+                callbackURL: `${frontendUrl()}${callbackUrl}`,
                 newUserCallbackURL: `${frontendUrl()}/complete-sign-up`,
               });
             }}
@@ -307,7 +312,7 @@ export default function SignUpForm({
             onClick={async () => {
               await authClient.signIn.social({
                 provider: "google",
-                callbackURL: `${frontendUrl()}/rooms`,
+                callbackURL: `${frontendUrl()}${callbackUrl}`,
                 newUserCallbackURL: `${frontendUrl()}/complete-sign-up`,
               });
             }}
@@ -316,7 +321,12 @@ export default function SignUpForm({
             Sign up with Google
           </Button>
           <FieldDescription className="px-6 text-center">
-            Already have an account? <Link href="/sign-in">Sign in</Link>
+            Already have an account?{" "}
+            <Link
+              href={`/sign-in?callbackUrl=${encodeURIComponent(callbackUrl)}`}
+            >
+              Sign in
+            </Link>
           </FieldDescription>
         </Field>
       </FieldGroup>
