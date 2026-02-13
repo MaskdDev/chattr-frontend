@@ -1,5 +1,9 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { acceptInvite } from "@/lib/api";
+import { ApiError, Invite, PartialInvite } from "@/lib/types";
+import { AxiosError } from "axios";
+import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -64,4 +68,39 @@ export function getInitials(author: string) {
  */
 export function generateNonce(): string {
   return crypto.randomUUID();
+}
+
+/**
+ * Attempt to accept an invite with the provided code.
+ */
+export async function attemptInviteAccept(
+  invite: Invite,
+  router: AppRouterInstance,
+) {
+  // Try accepting invite
+  try {
+    // Accept invite
+    await acceptInvite(invite.code);
+
+    // Redirect to room
+    router.push(`/rooms/${invite.room.id}`);
+  } catch (e) {
+    if (e instanceof AxiosError && e.status === 409) {
+      // Get error object
+      const error: ApiError = e.response?.data;
+
+      // Check message
+      switch (error.message) {
+        case "User is already in room.":
+          router.push(`/rooms/${invite.room.id}`);
+          break;
+        case "Invite has expired.":
+        case "Invite has been used up.":
+          alert("This invite has expired.");
+          break;
+      }
+    } else {
+      alert("Could not accept invite. Please try again later.");
+    }
+  }
 }

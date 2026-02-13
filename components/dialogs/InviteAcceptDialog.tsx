@@ -26,9 +26,7 @@ import { useRouter } from "next/navigation";
 
 // Create invite accept form schema
 const inviteAcceptFormSchema = z.object({
-  inviteCode: z
-    .string()
-    .max(20, "Invite codes can't be more than 20 characters long."),
+  inviteCode: z.string(),
 });
 
 export default function InviteAcceptDialog({
@@ -40,6 +38,7 @@ export default function InviteAcceptDialog({
 }) {
   // Create form lock state and error
   const [formLock, setFormLock] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   // Use query client and router
   const queryClient = useQueryClient();
@@ -53,14 +52,25 @@ export default function InviteAcceptDialog({
     validators: {
       onSubmit: inviteAcceptFormSchema,
     },
-    onSubmit: async ({ value, formApi }) => {
+    onSubmit: async ({ value }) => {
       if (!formLock) {
         // Set form lock
         setFormLock(true);
 
         try {
+          // Remove error
+          setError(null);
+
+          // Strip prefix from invite code
+          let inviteCode = value.inviteCode;
+          inviteCode = inviteCode.replace(
+            "https://chattr.maskd.dev/invite/",
+            "",
+          );
+          inviteCode = inviteCode.replace("chattr.maskd.dev/invite/", "");
+
           // Try accepting invite and refetch rooms
-          const invite = await acceptInvite(value.inviteCode);
+          const invite = await acceptInvite(inviteCode);
           await queryClient.refetchQueries({ queryKey: ["rooms"] });
 
           // Open newly created room
@@ -75,25 +85,21 @@ export default function InviteAcceptDialog({
           if (e instanceof AxiosError) {
             switch (e.status) {
               case 404: {
-                formApi.setFieldMeta("inviteCode", (prev) => ({
-                  ...prev,
-                  errors: ["Invalid invite code."],
-                }));
+                setError("Invalid invite code.");
                 break;
               }
               case 409: {
-                formApi.setFieldMeta("inviteCode", (prev) => ({
-                  ...prev,
-                  errors: ["Invite code has been used or expired."],
-                }));
+                // Check if user is already in room
+                if (e.response?.data.message === "User is already in room.") {
+                  setError("You are already in this room!");
+                } else {
+                  setError("Invite code has been used or expired.");
+                }
                 break;
               }
             }
           } else {
-            formApi.setFieldMeta("inviteCode", (prev) => ({
-              ...prev,
-              errors: ["Error accepting invite. Please try again later."],
-            }));
+            setError("Error accepting invite. Please try again later.");
           }
         }
 
@@ -116,7 +122,7 @@ export default function InviteAcceptDialog({
           <DialogHeader>
             <DialogTitle>Accept Invite</DialogTitle>
             <DialogDescription>
-              Enter an invite code to join the room!
+              Enter an invite code or URL to join the room!
             </DialogDescription>
           </DialogHeader>
           <FieldGroup className="gap-3">
@@ -139,8 +145,13 @@ export default function InviteAcceptDialog({
                       placeholder="abd3ka"
                       autoComplete="off"
                     />
-                    {isInvalid && (
-                      <FieldError errors={field.state.meta.errors} />
+                    {(isInvalid || error) && (
+                      <FieldError
+                        errors={[
+                          ...field.state.meta.errors,
+                          { message: error ?? undefined },
+                        ]}
+                      />
                     )}
                   </Field>
                 );

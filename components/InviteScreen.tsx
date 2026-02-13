@@ -2,7 +2,7 @@
 
 import { ApiError, Invite } from "@/lib/types";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { getInitials } from "@/lib/utils";
+import { attemptInviteAccept, getInitials } from "@/lib/utils";
 import { useAuth } from "@/app/providers/AuthProvider";
 import { Button } from "@/components/ui/button";
 import { acceptInvite } from "@/lib/api";
@@ -48,32 +48,11 @@ export default function InviteScreen({ invite }: { invite: Invite }) {
             // Set joining
             setJoining(true);
 
-            // Try accepting invite
-            try {
-              // Accept invite
-              await acceptInvite(invite.code);
+            // Attempt to accept invite
+            await attemptInviteAccept(invite, router);
 
-              // Redirect to room
-              router.push(`/rooms/${invite.room.id}`);
-            } catch (e) {
-              if (e instanceof AxiosError && e.status === 409) {
-                // Get error object
-                const error: ApiError = e.response?.data;
-
-                // Check message
-                switch (error.message) {
-                  case "User is already in room.":
-                    router.push(`/rooms/${invite.room.id}`);
-                    break;
-                  case "Invite has expired.":
-                  case "Invite has been used up.":
-                    alert("This invite has expired.");
-                    break;
-                }
-              } else {
-                alert("Could not accept invite. Please try again latr.");
-              }
-            }
+            // Set joining to false
+            setJoining(false);
           }}
           disabled={joining}
         >
