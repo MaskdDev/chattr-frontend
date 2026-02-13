@@ -3,21 +3,11 @@
 import { ReactNode } from "react";
 import { getRooms } from "@/lib/api";
 import { useQuery } from "@tanstack/react-query";
-import { cn } from "@/lib/utils";
-import Link from "next/link";
-import { Hash, Plus } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import LoadingScreen from "@/components/LoadingScreen";
-import { authClient } from "@/lib/auth-client";
 import CreateOrJoinRoom from "@/components/CreateOrJoinRoom";
 import { redirect, useParams } from "next/navigation";
 import { useAuth } from "@/app/providers/AuthProvider";
 import RoomSidebar from "@/components/RoomSidebar";
-import {
-  SidebarContent,
-  SidebarInset,
-  SidebarProvider,
-} from "@/components/ui/sidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
 
 export default function RoomsLayout({ children }: { children: ReactNode }) {
   // Get auth
@@ -32,20 +22,13 @@ export default function RoomsLayout({ children }: { children: ReactNode }) {
   const roomId = useParams<{ roomId?: string }>().roomId;
 
   // Get user's rooms
-  const {
-    isPending,
-    isError,
-    data: rooms,
-    error,
-  } = useQuery({
+  const { isPending, data: rooms } = useQuery({
     queryKey: ["rooms"],
     queryFn: getRooms,
+    staleTime: 3 * 60 * 1000,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
   });
-
-  // Return loading channels while getting user rooms
-  if (isPending || rooms === undefined) {
-    return <LoadingScreen loadingText="Loading Rooms" />;
-  }
 
   // If user doesn't have rooms, return empty screen
   if (rooms?.length === 0) {
@@ -56,7 +39,10 @@ export default function RoomsLayout({ children }: { children: ReactNode }) {
   return (
     <div className="flex h-dvh w-full overflow-y-hidden">
       <SidebarProvider>
-        <RoomSidebar rooms={rooms} activeRoomId={roomId} />
+        <RoomSidebar
+          rooms={isPending ? undefined : rooms}
+          activeRoomId={roomId}
+        />
         <div className="flex-1">{children}</div>
       </SidebarProvider>
     </div>

@@ -22,12 +22,13 @@ import {
 } from "@/components/ui/dropdown-menu";
 import InviteAcceptDialog from "@/components/dialogs/InviteAcceptDialog";
 import { useState } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function RoomSidebar({
   rooms,
   activeRoomId,
 }: {
-  rooms: PartialRoom[];
+  rooms?: PartialRoom[];
   activeRoomId?: string;
 }) {
   // Create dialog state
@@ -68,19 +69,26 @@ export default function RoomSidebar({
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
-        {rooms?.map((room) => (
-          <Link
-            href={`/rooms/${room.id}`}
-            className={cn(
-              "flex w-full items-center rounded-md px-2 py-1 text-base hover:bg-slate-800",
-              room.id === activeRoomId ? "bg-slate-700" : "bg-slate-950",
-            )}
-            key={room.id}
-          >
-            <Hash className="inline pr-1" />
-            {room.name}
-          </Link>
-        ))}
+        {rooms !== undefined
+          ? rooms?.map((room) => (
+              <Link
+                href={`/rooms/${room.id}`}
+                className={cn(
+                  "flex w-full items-center rounded-md px-2 py-1 text-base hover:bg-slate-800",
+                  room.id === activeRoomId ? "bg-slate-700" : "bg-slate-950",
+                )}
+                key={room.id}
+              >
+                <Hash className="inline pr-1" />
+                {room.name}
+              </Link>
+            ))
+          : [...Array(5).keys()].map((key) => (
+              <Skeleton
+                className="flex h-8 w-full items-center rounded-md bg-slate-800 px-2"
+                key={key}
+              />
+            ))}
       </SidebarContent>
 
       <SidebarFooter>
