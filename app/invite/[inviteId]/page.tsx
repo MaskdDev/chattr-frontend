@@ -19,7 +19,7 @@ export async function generateMetadata({
     title: "Chattr - A simple chatting app!",
     description:
       invite.creator !== null
-        ? `${invite.creator} has invited you to join "${invite.room.name}"!`
+        ? `${invite.creator.displayName} has invited you to join "${invite.room.name}"!`
         : `You've been invited to join "${invite.room.name}"!`,
     openGraph: {
       images: ["/embed.png"],
