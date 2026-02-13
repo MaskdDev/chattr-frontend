@@ -70,6 +70,9 @@ export class GatewaySocket {
     if (this.messageListeners.has(roomId)) {
       this.messageListeners.get(roomId)?.add(listener);
     } else {
+      // Add listener to listeners
+      this.messageListeners.set(roomId, new Set([listener]));
+
       // Create subscribe request
       const subscribeRequest: RoomSubscribeSocketMessage = {
         type: "subscribe",
