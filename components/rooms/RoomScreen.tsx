@@ -5,6 +5,7 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import { getMessages } from "@/lib/api";
 import { useMemo } from "react";
 import { formatIsoString } from "@/lib/utils";
+import RoomHeader from "@/components/rooms/RoomHeader";
 
 export default function RoomScreen({ room }: { room: Room }) {
   // Get messages
@@ -32,31 +33,8 @@ export default function RoomScreen({ room }: { room: Room }) {
   }, [messagePages]);
 
   return (
-    <div>
-      Room name: {room.name} <br />
-      Room description: {JSON.stringify(room.description)} <br />
-      Room ID: {room.id} <br />
-      Room creator: {JSON.stringify(room.creator)}
-      <div>
-        {messages.map((message) => (
-          <div
-            className="mx-2 my-1 rounded-xl bg-slate-100 px-2.5 py-1.5 hover:bg-slate-200"
-            key={message.id}
-          >
-            <div className="align-baseline">
-              <h2 className="inline font-bold">
-                {message.author?.displayName ?? "Deleted User"}
-              </h2>
-              {"  "}
-              <span className="text-xs text-slate-500">
-                {formatIsoString(message.timestamp)}
-              </span>
-            </div>
-
-            <p>{message.content}</p>
-          </div>
-        ))}
-      </div>
+    <div className="flex h-full w-full flex-col items-center justify-start gap-5 bg-slate-300 p-5">
+      <RoomHeader room={room} />
     </div>
   );
 }
