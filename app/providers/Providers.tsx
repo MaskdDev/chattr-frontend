@@ -41,10 +41,10 @@ export default function Providers({ children }: { children: ReactNode }) {
 
   // Return providers
   return (
-    <AuthProvider>
-      <QueryClientProvider client={queryClient}>
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
         <TooltipProvider>{children}</TooltipProvider>
-      </QueryClientProvider>
-    </AuthProvider>
+      </AuthProvider>
+    </QueryClientProvider>
   );
 }

@@ -1,10 +1,30 @@
-import { Room } from "@/lib/types";
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { Message, Room } from "@/lib/types";
+import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 import { getMessages } from "@/lib/api";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import RoomMessage from "@/components/rooms/RoomMessage";
+import { gatewaySocket } from "@/lib/sockets";
+import { addMessageToQueryCache } from "@/lib/query";
 
 export default function RoomMessages({ room }: { room: Room }) {
+  // Use query client
+  const queryClient = useQueryClient();
+
+  // Subscribe to messages from room
+  useEffect(() => {
+    // Create callback function
+    const messageListener = (message: Message) => {
+      // Add message to messages
+      addMessageToQueryCache(queryClient, message, room.id);
+    };
+
+    // Subscribe to new messages with callback function
+    gatewaySocket.subscribe(room.id, messageListener);
+
+    // Return cleanup function
+    return () => gatewaySocket.unsubscribe(room.id, messageListener);
+  }, [room, queryClient]);
+
   // Get messages
   const { data: messagePages } = useInfiniteQuery({
     queryKey: ["messages", room.id],

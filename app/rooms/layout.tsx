@@ -15,7 +15,7 @@ export default function RoomsLayout({ children }: { children: ReactNode }) {
 
   // Redirect user to sign in page if not logged in
   if (!session) {
-    redirect("/sign-up");
+    redirect("/sign-in");
   }
 
   // Get room ID, if present

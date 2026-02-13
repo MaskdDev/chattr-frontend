@@ -10,7 +10,7 @@ export default function RoomScreen({ room }: { room: Room }) {
     <div className="flex h-full w-full flex-col items-center justify-start gap-5 bg-slate-300 p-5">
       <RoomHeader room={room} />
       <RoomMessages room={room} />
-      <RoomMessageBox sendCallback={async () => {}} disabled={false} />
+      <RoomMessageBox room={room} disabled={false} />
     </div>
   );
 }

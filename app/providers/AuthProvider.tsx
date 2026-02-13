@@ -2,6 +2,9 @@ import { createContext, ReactNode, useContext } from "react";
 import { authClient, Session } from "@/lib/auth-client";
 import { SessionQueryParams } from "better-auth";
 import LoadingScreen from "@/components/LoadingScreen";
+import { UserProfile } from "@/lib/types";
+import { getUser } from "@/lib/api";
+import { useQuery } from "@tanstack/react-query";
 
 export type AuthContextType = {
   session: Session | null;
@@ -14,6 +17,7 @@ export type AuthContextType = {
       | undefined,
   ) => Promise<void>;
   isRefetching: boolean;
+  userProfile: UserProfile | null;
 };
 
 export const AuthContext = createContext<AuthContextType | null>(null);
@@ -27,9 +31,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     isRefetching,
   } = authClient.useSession();
 
+  // Create user profile query
+  const { data: userProfile } = useQuery({
+    queryKey: ["userProfile"],
+    queryFn: async () =>
+      session?.user.id ? await getUser(session?.user.id) : null,
+    enabled: !!session?.user.id,
+  });
+
   // Return auth provider
   return (
-    <AuthContext.Provider value={{ session, isPending, refetch, isRefetching }}>
+    <AuthContext.Provider
+      value={{
+        session,
+        isPending,
+        refetch,
+        isRefetching,
+        userProfile: userProfile ?? null,
+      }}
+    >
       {isPending || isRefetching ? (
         <LoadingScreen loadingText="Authenticating" />
       ) : (
