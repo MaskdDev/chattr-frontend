@@ -7,9 +7,8 @@ import {
   SidebarHeader,
 } from "@/components/ui/sidebar";
 import { PartialRoom } from "@/lib/types";
-import { cn } from "@/lib/utils";
 import Link from "next/link";
-import { Hash, MailCheck, Plus } from "lucide-react";
+import { MailCheck, Plus } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import RoomCreateDialog from "@/components/dialogs/RoomCreateDialog";
 import { Button } from "@/components/ui/button";
@@ -23,6 +22,7 @@ import {
 import InviteAcceptDialog from "@/components/dialogs/InviteAcceptDialog";
 import { useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
+import RoomSidebarLink from "@/components/RoomSidebarLink";
 
 export default function RoomSidebar({
   rooms,
@@ -73,17 +73,11 @@ export default function RoomSidebar({
         </div>
         {rooms !== undefined
           ? rooms?.map((room) => (
-              <Link
-                href={`/rooms/${room.id}`}
-                className={cn(
-                  "flex w-full items-center rounded-md px-2 py-1 text-base hover:bg-slate-800",
-                  room.id === activeRoomId ? "bg-slate-700" : "bg-slate-950",
-                )}
+              <RoomSidebarLink
+                room={room}
+                activeRoomId={activeRoomId}
                 key={room.id}
-              >
-                <Hash className="inline pr-1" />
-                {room.name}
-              </Link>
+              />
             ))
           : [...Array(5).keys()].map((key) => (
               <Skeleton
