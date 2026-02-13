@@ -76,7 +76,7 @@ export default function RoomCreateDialog({
 
           // Reset form
           setTimeout(() => form.reset(), 250);
-        } catch (e) {
+        } catch {
           alert("Error creating room. Please try again later.");
         }
 
