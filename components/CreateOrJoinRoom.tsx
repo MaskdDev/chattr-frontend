@@ -1,13 +1,17 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { authClient } from "@/lib/auth-client";
+import { signOutAndClear } from "@/lib/auth-client";
 import RoomCreateDialog from "@/components/dialogs/RoomCreateDialog";
 import { ArrowLeft } from "lucide-react";
 import InviteAcceptDialog from "@/components/dialogs/InviteAcceptDialog";
 import { useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function CreateOrJoinRoom() {
+  // Use query client
+  const queryClient = useQueryClient();
+
   // Create dialog state
   const [roomCreateOpen, setRoomCreateOpen] = useState(false);
   const [acceptInviteOpen, setAcceptInviteOpen] = useState(false);
@@ -17,7 +21,7 @@ export default function CreateOrJoinRoom() {
     <div className="flex h-dvh flex-col items-center justify-center overflow-y-hidden bg-slate-950 sm:space-y-4">
       <a
         className="absolute top-5 left-5 cursor-pointer text-lg text-slate-50 underline"
-        onClick={() => authClient.signOut()}
+        onClick={() => signOutAndClear(queryClient)}
       >
         <ArrowLeft size={20} className="inline" />
         Sign Out

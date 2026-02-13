@@ -9,7 +9,7 @@ import {
 import { PartialRoom } from "@/lib/types";
 import Link from "next/link";
 import { MailCheck, Plus } from "lucide-react";
-import { authClient } from "@/lib/auth-client";
+import { signOutAndClear } from "@/lib/auth-client";
 import RoomCreateDialog from "@/components/dialogs/RoomCreateDialog";
 import { Button } from "@/components/ui/button";
 import {
@@ -23,6 +23,7 @@ import InviteAcceptDialog from "@/components/dialogs/InviteAcceptDialog";
 import { useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import RoomSidebarLink from "@/components/RoomSidebarLink";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function RoomSidebar({
   rooms,
@@ -31,6 +32,9 @@ export default function RoomSidebar({
   rooms?: PartialRoom[];
   activeRoomId?: string;
 }) {
+  // Use query client
+  const queryClient = useQueryClient();
+
   // Create dialog state
   const [roomCreateOpen, setRoomCreateOpen] = useState(false);
   const [acceptInviteOpen, setAcceptInviteOpen] = useState(false);
@@ -90,7 +94,7 @@ export default function RoomSidebar({
       <SidebarFooter>
         <Button
           className="w-full bg-slate-50 text-slate-950 hover:bg-slate-50 hover:brightness-75"
-          onClick={() => authClient.signOut()}
+          onClick={() => signOutAndClear(queryClient)}
         >
           Sign Out
         </Button>
