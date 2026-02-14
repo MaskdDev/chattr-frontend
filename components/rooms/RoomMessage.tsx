@@ -64,12 +64,14 @@ export default function RoomMessage({
               {formatIsoString(message.timestamp)}
             </span>
           </div>
-          <div className="align-baseline text-base wrap-break-word">
+          <div className="cursor-default align-baseline text-base wrap-break-word">
             {message.content}
             {message.editedTimestamp && (
-              <Tooltip delayDuration={700}>
+              <Tooltip delayDuration={1000} disableHoverableContent={true}>
                 <TooltipTrigger asChild>
-                  <span className="text-[10px] text-slate-500"> (edited)</span>
+                  <span className="inline-block pl-1 text-[10px] text-slate-500">
+                    (edited)
+                  </span>
                 </TooltipTrigger>
                 <TooltipContent>
                   <p>Edited {formatIsoString(message.editedTimestamp)}</p>
