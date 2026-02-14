@@ -1,21 +1,48 @@
-import type { NewMessage } from "./types.ts";
+import type { Message, MessageEdit } from "./types.ts";
 
 /**
  * A type representing a websocket message.
  */
 export type SocketMessage =
-  | MessageSocketMessage
+  | MessageEvent
   | PingSocketMessage
   | PongSocketMessage
   | RoomSubscribeSocketMessage
   | RoomUnsubscribeSocketMessage;
 
 /**
+ * A type representing the possible websocket message event types.
+ */
+export type MessageEvent =
+  | NewMessageEvent
+  | EditMessageEvent
+  | DeleteMessageEvent;
+
+/**
  * A type representing a websocket message, indicating a new message has been sent.
  */
-export type MessageSocketMessage = {
-  type: "message";
-  body: NewMessage;
+export type NewMessageEvent = {
+  type: "message_new";
+  roomId: string;
+  body: Message;
+};
+
+/**
+ * A type representing a websocket message edit event, indicating a message has been edited.
+ */
+export type EditMessageEvent = {
+  type: "message_edit";
+  roomId: string;
+  body: MessageEdit;
+};
+
+/**
+ * A type representing a websocket message delete event, indicating a message has been deleted.
+ */
+export type DeleteMessageEvent = {
+  type: "message_delete";
+  roomId: string;
+  messageId: string;
 };
 
 /**

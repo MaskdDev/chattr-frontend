@@ -5,6 +5,7 @@ import {
   InviteCreate,
   Message,
   MessageCreate,
+  MessagePatch,
   PartialInvite,
   PartialRoom,
   Room,
@@ -247,11 +248,12 @@ export async function getMessage(
 export async function editMessage(
   roomId: string,
   messageId: string,
-  content: string,
+  messagePatch: MessagePatch,
 ): Promise<void> {
-  await patchAuthed<void>(`/rooms/${roomId}/messages/${messageId}`, {
-    content,
-  });
+  await patchAuthed<void>(
+    `/rooms/${roomId}/messages/${messageId}`,
+    messagePatch,
+  );
 }
 
 /**

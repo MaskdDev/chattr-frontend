@@ -14,17 +14,16 @@ import {
   FieldGroup,
   FieldLabel,
 } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import React, { useState, Dispatch, SetStateAction } from "react";
 import { useForm } from "@tanstack/react-form";
 import * as z from "zod";
-import { createRoom, editMessage } from "@/lib/api";
+import { editMessage } from "@/lib/api";
 import { useQueryClient } from "@tanstack/react-query";
 import { Spinner } from "@/components/ui/spinner";
-import { useRouter } from "next/navigation";
-import { Message } from "@/lib/types";
+import { Message, MessagePatch } from "@/lib/types";
 import { editExistingMessage } from "@/lib/query";
+import { generateNonce } from "@/lib/utils";
 
 // Create edit message form schema
 const editMessageSchema = z.object({
@@ -43,8 +42,9 @@ export default function EditMessageDialog({
   setOpen: Dispatch<SetStateAction<boolean>>;
   message: Message;
 }) {
-  // Create form lock state
+  // Create form lock state and error
   const [formLock, setFormLock] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   // Use query client and router
   const queryClient = useQueryClient();
@@ -62,12 +62,19 @@ export default function EditMessageDialog({
         // Get new message content
         const newContent = value.content;
 
-        // Set form lock
+        // Set form lock and remove error
         setFormLock(true);
+        setError(null);
 
         try {
+          // Create edit request
+          const messagePatch: MessagePatch = {
+            content: newContent,
+            nonce: generateNonce(),
+          };
+
           // Send message edit request and refetch rooms
-          await editMessage(message.roomId, message.id, newContent);
+          await editMessage(message.roomId, message.id, messagePatch);
 
           // Edit message in query cache
           editExistingMessage(
@@ -83,7 +90,7 @@ export default function EditMessageDialog({
           // Reset form
           setTimeout(() => form.reset(), 250);
         } catch {
-          alert("Error editing message. Please try again later.");
+          setError("Error editing message. Please try again later.");
         }
 
         // Unlock form
@@ -126,8 +133,13 @@ export default function EditMessageDialog({
                       aria-invalid={isInvalid}
                       autoComplete="off"
                     />
-                    {isInvalid && (
-                      <FieldError errors={field.state.meta.errors} />
+                    {(isInvalid || error) && (
+                      <FieldError
+                        errors={[
+                          ...field.state.meta.errors,
+                          { message: error ?? undefined },
+                        ]}
+                      />
                     )}
                   </Field>
                 );

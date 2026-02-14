@@ -1,10 +1,15 @@
-import { Message, Room } from "@/lib/types";
+import { Room } from "@/lib/types";
+import { MessageEvent } from "@/lib/socketTypes";
 import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 import { getMessages } from "@/lib/api";
 import { useEffect, useMemo, useRef } from "react";
 import RoomMessage from "@/components/rooms/RoomMessage";
 import { gatewaySocket } from "@/lib/sockets";
-import { addMessageToQueryCache } from "@/lib/query";
+import {
+  addMessageToQueryCache,
+  deleteExistingMessage,
+  editExistingMessage,
+} from "@/lib/query";
 import RoomMessagesLoading from "@/components/rooms/RoomMessagesLoading";
 
 export default function RoomMessages({ room }: { room: Room }) {
@@ -17,9 +22,30 @@ export default function RoomMessages({ room }: { room: Room }) {
   // Subscribe to messages from room
   useEffect(() => {
     // Create callback function
-    const messageListener = (message: Message) => {
-      // Add message to messages
-      addMessageToQueryCache(queryClient, message, room.id);
+    const messageListener = (event: MessageEvent) => {
+      // Match event type
+      switch (event.type) {
+        // Add new message to messages
+        case "message_new":
+          addMessageToQueryCache(queryClient, event.body, room.id);
+          break;
+
+        // Register message edit
+        case "message_edit":
+          editExistingMessage(
+            queryClient,
+            room.id,
+            event.body.id,
+            event.body.content,
+            new Date(event.body.editedTimestamp),
+          );
+          break;
+
+        // Register message delete
+        case "message_delete":
+          deleteExistingMessage(queryClient, room.id, event.messageId);
+          break;
+      }
     };
 
     // Subscribe to new messages with callback function

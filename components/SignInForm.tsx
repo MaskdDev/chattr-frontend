@@ -61,8 +61,9 @@ export default function SignInForm({
           },
           {
             onRequest: () => {
-              // Disable form
+              // Disable form and remove error
               setFormLock(true);
+              setError(null);
             },
             onSuccess: async () => {
               // Refetch auth state

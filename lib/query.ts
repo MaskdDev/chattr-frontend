@@ -110,18 +110,15 @@ export function replacePendingMessage(
 /**
  * Edit the content of an existing message in the message cache.
  *
- * Uses current timestamp as edit timestamp.
+ * Uses current timestamp as edit timestamp, if not provided.
  */
 export function editExistingMessage(
   queryClient: QueryClient,
   roomId: string,
   messageId: string,
   newContent: string,
+  editedTimestamp: Date = new Date(),
 ) {
-  // Get rough edit timestamp
-  const editedTimestamp = new Date();
-
-  // Set query data
   queryClient.setQueryData(
     ["messages", roomId],
     (currentMessages: InfiniteData<Message[]> | undefined) => {

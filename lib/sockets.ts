@@ -1,13 +1,13 @@
-import type { Message } from "@/lib/types";
 import {
   RoomSubscribeSocketMessage,
   RoomUnsubscribeSocketMessage,
   SocketMessage,
+  MessageEvent,
 } from "@/lib/socketTypes";
 import { gatewayUrl } from "@/lib/utils";
 
 // Create listener types
-type MessageListener = (message: Message) => void | Promise<void>;
+type MessageListener = (event: MessageEvent) => void | Promise<void>;
 type EventListener = () => void;
 type EventType = "connected" | "reconnected" | "reconnecting";
 
@@ -63,7 +63,7 @@ export class GatewaySocket {
   }
 
   /**
-   * Subscribe to messages from a given room ID.
+   * Subscribe to message events from a given room ID.
    */
   subscribe(roomId: string, listener: MessageListener) {
     // Check if socket is open
@@ -90,7 +90,7 @@ export class GatewaySocket {
   }
 
   /**
-   * Unsubscribe a listener from messages from a given room ID.
+   * Unsubscribe a listener from message events from a given room ID.
    */
   unsubscribe(roomId: string, listener: MessageListener) {
     // Check if socket is open
@@ -148,17 +148,18 @@ export class GatewaySocket {
           break;
         }
 
-        // If a new message is received
-        case "message":
-          // Get message object
-          const message = socketMessage.body;
+        // If a message event is received
+        case "message_new":
+        case "message_edit":
+        case "message_delete":
+          // Get event room ID
+          const eventRoomId = socketMessage.roomId;
 
           // Send message to all listeners
-          if (this.messageListeners.has(message.roomId)) {
-            this.messageListeners.get(message.roomId)?.forEach((listener) => {
-              listener(message);
-            });
-          }
+          this.messageListeners.get(eventRoomId)?.forEach((listener) => {
+            listener(socketMessage);
+          });
+
           break;
       }
     });

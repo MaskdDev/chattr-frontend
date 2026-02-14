@@ -54,13 +54,11 @@ export default function InviteAcceptDialog({
     },
     onSubmit: async ({ value }) => {
       if (!formLock) {
-        // Set form lock
+        // Set form lock and remove error
         setFormLock(true);
+        setError(null);
 
         try {
-          // Remove error
-          setError(null);
-
           // Strip prefix from invite code
           let inviteCode = value.inviteCode;
           inviteCode = inviteCode.replace(
