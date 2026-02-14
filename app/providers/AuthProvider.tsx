@@ -1,10 +1,7 @@
-import { createContext, ReactNode, useContext } from "react";
+import { createContext, ReactNode, useContext, useMemo } from "react";
 import { authClient, Session } from "@/lib/auth-client";
-import { SessionQueryParams } from "better-auth";
-import LoadingScreen from "@/components/LoadingScreen";
 import { UserProfile } from "@/lib/types";
-import { getUser } from "@/lib/api";
-import { useQuery } from "@tanstack/react-query";
+import { SessionQueryParams } from "better-auth";
 
 export type AuthContextType = {
   session: Session | null;
@@ -31,13 +28,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     isRefetching,
   } = authClient.useSession();
 
-  // Create user profile query
-  const { data: userProfile } = useQuery({
-    queryKey: ["userProfile"],
-    queryFn: async () =>
-      session?.user.id ? await getUser(session?.user.id) : null,
-    enabled: !!session?.user.id,
-  });
+  // Create user profile object
+  const userProfile: UserProfile | null = useMemo(() => {
+    // Return null if session has not been fetched
+    if (!session) return null;
+
+    // Otherwise, return derived user
+    return {
+      id: session.user.id,
+      username: session.user.username ?? "",
+      displayName: session.user.displayUsername ?? "",
+      avatarUrl: session.user.image ?? null,
+    };
+  }, [session]);
 
   // Return auth provider
   return (
