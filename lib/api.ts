@@ -157,7 +157,8 @@ export async function removeMember(
  * Get the invites for a room.
  */
 export async function getInvites(roomId: string): Promise<Invite[]> {
-  return (await get<{ invites: Invite[] }>(`/rooms/${roomId}/invites`)).invites;
+  return (await getAuthed<{ invites: Invite[] }>(`/rooms/${roomId}/invites`))
+    .invites;
 }
 
 /**
@@ -173,8 +174,12 @@ export async function createInvite(
 /**
  * Get information for a specific invite.
  */
-export async function getInvite(inviteCode: string): Promise<Invite> {
-  return await getAuthed<Invite>(`/invites/${inviteCode}`);
+export async function getInvite(inviteCode: string): Promise<Invite | null> {
+  try {
+    return await get<Invite>(`/invites/${inviteCode}`);
+  } catch {
+    return null;
+  }
 }
 
 /**

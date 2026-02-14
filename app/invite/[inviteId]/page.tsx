@@ -14,20 +14,34 @@ export async function generateMetadata({
   // Fetch invite
   const invite = await getInvite(inviteId);
 
-  // Return metadata
-  return {
-    title: "Chattr - A simple chatting app!",
-    description:
-      invite.creator !== null
-        ? `${invite.creator.displayName} has invited you to join "${invite.room.name}"!`
-        : `You've been invited to join "${invite.room.name}"!`,
-    openGraph: {
-      images: ["/embed.png"],
-    },
-    twitter: {
-      card: "summary_large_image",
-    },
-  };
+  // Check if invite exists, and return appropriate metadata.
+  if (invite !== null) {
+    return {
+      title: "Chattr - A simple chatting app!",
+      description:
+        invite.creator !== null
+          ? `${invite.creator.displayName} has invited you to join "${invite.room.name}"!`
+          : `You've been invited to join "${invite.room.name}"!`,
+      openGraph: {
+        images: ["/embed.png"],
+      },
+      twitter: {
+        card: "summary_large_image",
+      },
+    };
+  } else {
+    // Return default metadata
+    return {
+      title: "Chattr - A simple chatting app!",
+      description: "This invite does not exist or has expired.",
+      openGraph: {
+        images: ["/embed.png"],
+      },
+      twitter: {
+        card: "summary_large_image",
+      },
+    };
+  }
 }
 
 export default async function InvitePage({

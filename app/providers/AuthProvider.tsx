@@ -50,11 +50,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         userProfile: userProfile ?? null,
       }}
     >
-      {isPending || isRefetching ? (
-        <LoadingScreen loadingText="Authenticating" />
-      ) : (
-        children
-      )}
+      {children}
     </AuthContext.Provider>
   );
 }

@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { SidebarProvider } from "@/components/ui/sidebar";
+import AuthWrapper from "@/app/providers/AuthWrapper";
 
 export default function Providers({ children }: { children: ReactNode }) {
   // Add gateway socket event listeners
@@ -43,7 +44,9 @@ export default function Providers({ children }: { children: ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <TooltipProvider>{children}</TooltipProvider>
+        <TooltipProvider>
+          <AuthWrapper>{children}</AuthWrapper>
+        </TooltipProvider>
       </AuthProvider>
     </QueryClientProvider>
   );
