@@ -8,6 +8,9 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useAuth } from "@/app/providers/AuthProvider";
+import { useMutation } from "@tanstack/react-query";
+import { deleteMessage } from "@/lib/api";
+import { deleteExistingMessage } from "@/lib/query";
 
 export default function RoomMessage({
   message,
@@ -18,6 +21,20 @@ export default function RoomMessage({
   room: Room;
   openEditModal: (message: Message) => void;
 }) {
+  // Create delete mutation query
+  const deleteMutation = useMutation({
+    mutationFn: async () => {
+      return deleteMessage(room.id, message.id);
+    },
+    onMutate: (_, { client: queryClient }) => {
+      // Delete message from cache
+      deleteExistingMessage(queryClient, room.id, message.id);
+    },
+    onError: () => {
+      alert("Could not delete message.");
+    },
+  });
+
   // Use auth to get user profile
   const { userProfile } = useAuth();
 
@@ -42,6 +59,7 @@ export default function RoomMessage({
             message={message}
             room={room}
             triggerMessageEdit={() => openEditModal(message)}
+            triggerMessageDelete={() => deleteMutation.mutate()}
           />
         </div>
       )}

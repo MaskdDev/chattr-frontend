@@ -8,11 +8,13 @@ export default function RoomMessageButtons({
   message,
   room,
   triggerMessageEdit,
+  triggerMessageDelete,
 }: {
   userProfile: UserProfile | null;
   message: Message;
   room: Room;
   triggerMessageEdit: () => void;
+  triggerMessageDelete: () => void;
 }) {
   // Get user ID, message author ID and room creator ID
   const userId = userProfile?.id;
@@ -37,6 +39,7 @@ export default function RoomMessageButtons({
           <MessageButton
             aria-label="Delete message"
             className="hover:text-red-400 focus:text-red-400"
+            onClick={triggerMessageDelete}
           >
             <Trash2 className="size-4" />
           </MessageButton>

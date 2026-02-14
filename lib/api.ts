@@ -63,7 +63,9 @@ async function patchAuthed<T>(path: string, body: object): Promise<T> {
  * Make an authenticated DELETE request to the backend and return the JSON response.
  */
 async function deleteAuthed<T>(path: string): Promise<T> {
-  return (await axios.delete(`${backendUrl()}${path}`)).data;
+  return (
+    await axios.delete(`${backendUrl()}${path}`, { withCredentials: true })
+  ).data;
 }
 
 /**
