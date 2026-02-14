@@ -1,4 +1,4 @@
-import type { Message } from "@/lib/types";
+import type { Message, Room } from "@/lib/types";
 import MessageButtons from "@/components/rooms/RoomMessageButtons";
 import { cn, formatIsoString, getInitials } from "@/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -7,14 +7,20 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useAuth } from "@/app/providers/AuthProvider";
 
 export default function RoomMessage({
   message,
+  room,
   openEditModal,
 }: {
   message: Message;
+  room: Room;
   openEditModal: (message: Message) => void;
 }) {
+  // Use auth to get user profile
+  const { userProfile } = useAuth();
+
   // Check if message is pending / errored
   const isPending = message.id.startsWith("pending");
   const isError = message.id.startsWith("error");
@@ -30,8 +36,13 @@ export default function RoomMessage({
       tabIndex={0}
     >
       {!isPending && !isError && (
-        <div className="absolute -top-2 right-2 hidden group-focus-within:block group-hover:block">
-          <MessageButtons triggerMessageEdit={() => openEditModal(message)} />
+        <div className="absolute -top-2 right-3 hidden group-focus-within:block group-hover:block">
+          <MessageButtons
+            userProfile={userProfile}
+            message={message}
+            room={room}
+            triggerMessageEdit={() => openEditModal(message)}
+          />
         </div>
       )}
       <div className="flex flex-row items-start gap-3.5">

@@ -106,6 +106,7 @@ export default function RoomMessages({ room }: { room: Room }) {
           messages.map((message) => (
             <RoomMessage
               message={message}
+              room={room}
               key={message.id}
               openEditModal={(message) => {
                 setEditingMessage(message);
