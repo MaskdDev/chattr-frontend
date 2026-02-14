@@ -98,7 +98,7 @@ export default function RoomMessage({
             {message.editedTimestamp && (
               <Tooltip delayDuration={1000} disableHoverableContent={true}>
                 <TooltipTrigger asChild>
-                  <span className="inline-block pl-1 text-[10px] text-slate-500">
+                  <span className="pl-1 text-[10px] text-slate-500">
                     (edited)
                   </span>
                 </TooltipTrigger>
