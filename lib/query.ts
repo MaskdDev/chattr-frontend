@@ -108,6 +108,94 @@ export function replacePendingMessage(
 }
 
 /**
+ * Edit the content of an existing message in the message cache.
+ *
+ * Uses current timestamp as edit timestamp.
+ */
+export function editExistingMessage(
+  queryClient: QueryClient,
+  roomId: string,
+  messageId: string,
+  newContent: string,
+) {
+  // Get rough edit timestamp
+  const editedTimestamp = new Date();
+
+  // Set query data
+  queryClient.setQueryData(
+    ["messages", roomId],
+    (currentMessages: InfiniteData<Message[]> | undefined) => {
+      // If current messages don't exist, return
+      if (!currentMessages) return currentMessages;
+
+      // Find message in pages, to create new pages
+      const newPages = currentMessages.pages.map((page) => {
+        // Try and find message to edit
+        const messageIndex = page.findIndex(
+          (message) => message.id === messageId,
+        );
+
+        // If not this page, return the page unchanged
+        if (messageIndex === -1) return page;
+
+        // Otherwise, create new page with edited message
+        return [
+          ...page.slice(0, messageIndex),
+          { ...page[messageIndex], content: newContent, editedTimestamp },
+          ...page.slice(messageIndex + 1),
+        ];
+      });
+
+      // Return modified messages
+      return {
+        ...currentMessages,
+        pages: newPages,
+      };
+    },
+  );
+}
+
+/**
+ * Delete an existing message in the message cache.
+ */
+export function deleteExistingMessage(
+  queryClient: QueryClient,
+  roomId: string,
+  messageId: string,
+) {
+  queryClient.setQueryData(
+    ["messages", roomId],
+    (currentMessages: InfiniteData<Message[]> | undefined) => {
+      // If current messages don't exist, return
+      if (!currentMessages) return currentMessages;
+
+      // Find message in pages, to create new pages
+      const newPages = currentMessages.pages.map((page) => {
+        // Try and find message to edit
+        const messageIndex = page.findIndex(
+          (message) => message.id === messageId,
+        );
+
+        // If not this page, return the page unchanged
+        if (messageIndex === -1) return page;
+
+        // Otherwise, create new page with edited message
+        return [
+          ...page.slice(0, messageIndex),
+          ...page.slice(messageIndex + 1),
+        ];
+      });
+
+      // Return modified messages
+      return {
+        ...currentMessages,
+        pages: newPages,
+      };
+    },
+  );
+}
+
+/**
  * Replace a pending message with an errored version in the message cache.
  */
 export function errorPendingMessage(
