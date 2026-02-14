@@ -119,7 +119,7 @@ export default function EditMessageDialog({
         <DialogContent className="sm:max-w-xl">
           <DialogHeader>
             <DialogTitle>Edit Message</DialogTitle>
-            <DialogDescription>
+            <DialogDescription className="sr-only">
               Change the content of your message here.
             </DialogDescription>
           </DialogHeader>

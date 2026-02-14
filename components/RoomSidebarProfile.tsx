@@ -1,5 +1,3 @@
-"use client";
-
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -19,8 +17,10 @@ import { useQueryClient } from "@tanstack/react-query";
 
 export default function RoomSidebarProfile({
   user,
+  openSettings,
 }: {
   user: UserProfile | null;
+  openSettings: () => void;
 }) {
   // Use query client
   const queryClient = useQueryClient();
@@ -83,7 +83,7 @@ export default function RoomSidebarProfile({
 
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem>
+          <DropdownMenuItem onClick={() => openSettings()}>
             <Settings />
             Account Settings
           </DropdownMenuItem>

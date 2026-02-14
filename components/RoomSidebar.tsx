@@ -24,6 +24,7 @@ import RoomSidebarLink from "@/components/RoomSidebarLink";
 import { useAuth } from "@/app/providers/AuthProvider";
 import RoomSidebarProfile from "@/components/RoomSidebarProfile";
 import InviteCreatedDialog from "@/components/dialogs/InviteCreatedDialog";
+import { SettingsDialog } from "@/components/dialogs/SettingsDialog";
 
 export default function RoomSidebar({
   rooms,
@@ -39,6 +40,7 @@ export default function RoomSidebar({
   const [roomCreateOpen, setRoomCreateOpen] = useState(false);
   const [acceptInviteOpen, setAcceptInviteOpen] = useState(false);
   const [inviteCreatedOpen, setInviteCreatedOpen] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
 
   // Create invite code state
   const [invite, setInvite] = useState<PartialInvite | null>(null);
@@ -100,7 +102,10 @@ export default function RoomSidebar({
       </SidebarContent>
 
       <SidebarFooter className="px-1.5">
-        <RoomSidebarProfile user={userProfile} />
+        <RoomSidebarProfile
+          user={userProfile}
+          openSettings={() => setSettingsOpen(true)}
+        />
       </SidebarFooter>
       <RoomCreateDialog open={roomCreateOpen} setOpen={setRoomCreateOpen} />
       <InviteAcceptDialog
@@ -112,6 +117,7 @@ export default function RoomSidebar({
         setOpen={setInviteCreatedOpen}
         invite={invite}
       />
+      <SettingsDialog open={settingsOpen} setOpen={setSettingsOpen} />
     </Sidebar>
   );
 }
