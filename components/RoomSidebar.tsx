@@ -84,8 +84,10 @@ export default function RoomSidebar({
               <RoomSidebarLink
                 room={room}
                 activeRoomId={activeRoomId}
-                setInvite={setInvite}
-                openInviteModal={() => setInviteCreatedOpen(true)}
+                openInviteModal={(invite) => {
+                  setInvite(invite);
+                  setInviteCreatedOpen(true);
+                }}
                 key={room.id}
               />
             ))

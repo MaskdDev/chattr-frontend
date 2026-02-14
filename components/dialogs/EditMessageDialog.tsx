@@ -15,7 +15,7 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Textarea } from "@/components/ui/textarea";
-import React, { useState, Dispatch, SetStateAction } from "react";
+import React, { useState, Dispatch, SetStateAction, useEffect } from "react";
 import { useForm } from "@tanstack/react-form";
 import * as z from "zod";
 import { editMessage } from "@/lib/api";
@@ -40,7 +40,7 @@ export default function EditMessageDialog({
 }: {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
-  message: Message;
+  message: Message | null;
 }) {
   // Create form lock state and error
   const [formLock, setFormLock] = useState(false);
@@ -67,28 +67,30 @@ export default function EditMessageDialog({
         setError(null);
 
         try {
-          // Create edit request
-          const messagePatch: MessagePatch = {
-            content: newContent,
-            nonce: generateNonce(),
-          };
+          // Verify that message being edited is not null
+          if (message !== null) {
+            // Create edit request
+            const messagePatch: MessagePatch = {
+              content: newContent,
+              nonce: generateNonce(),
+            };
 
-          // Send message edit request and refetch rooms
-          await editMessage(message.roomId, message.id, messagePatch);
+            // Send message edit request and refetch rooms
+            await editMessage(message.roomId, message.id, messagePatch);
 
-          // Edit message in query cache
-          editExistingMessage(
-            queryClient,
-            message.roomId,
-            message.id,
-            newContent,
-          );
+            // Edit message in query cache
+            editExistingMessage(
+              queryClient,
+              message.roomId,
+              message.id,
+              newContent,
+            );
 
-          // Close modal
-          setOpen(false);
-
-          // Reset form
-          setTimeout(() => form.reset(), 250);
+            // Close modal
+            setOpen(false);
+          } else {
+            setError("Please select a message to edit and try again.");
+          }
         } catch {
           setError("Error editing message. Please try again later.");
         }
@@ -99,6 +101,12 @@ export default function EditMessageDialog({
     },
   });
 
+  // Reset form whenever a new message is provided
+  useEffect(() => {
+    form.reset({ content: message?.content ?? "" });
+  }, [message, form]);
+
+  // Return dialog
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <form
@@ -111,6 +119,9 @@ export default function EditMessageDialog({
         <DialogContent className="sm:max-w-xl">
           <DialogHeader>
             <DialogTitle>Edit Message</DialogTitle>
+            <DialogDescription>
+              Change the content of your message here.
+            </DialogDescription>
           </DialogHeader>
           <FieldGroup className="gap-3">
             <form.Field name="content">
@@ -127,7 +138,6 @@ export default function EditMessageDialog({
                       id={field.name}
                       name={field.name}
                       value={field.state.value}
-                      defaultValue={message.content}
                       onBlur={field.handleBlur}
                       onChange={(e) => field.handleChange(e.target.value)}
                       aria-invalid={isInvalid}

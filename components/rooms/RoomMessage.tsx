@@ -2,8 +2,19 @@ import type { Message } from "@/lib/types";
 import MessageButtons from "@/components/rooms/RoomMessageButtons";
 import { cn, formatIsoString, getInitials } from "@/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
-export default function RoomMessage({ message }: { message: Message }) {
+export default function RoomMessage({
+  message,
+  openEditModal,
+}: {
+  message: Message;
+  openEditModal: (message: Message) => void;
+}) {
   // Check if message is pending / errored
   const isPending = message.id.startsWith("pending");
   const isError = message.id.startsWith("error");
@@ -20,7 +31,7 @@ export default function RoomMessage({ message }: { message: Message }) {
     >
       {!isPending && !isError && (
         <div className="absolute -top-2 right-2 hidden group-focus-within:block group-hover:block">
-          <MessageButtons />
+          <MessageButtons triggerMessageEdit={() => openEditModal(message)} />
         </div>
       )}
       <div className="flex flex-row items-start gap-3.5">
@@ -52,18 +63,20 @@ export default function RoomMessage({ message }: { message: Message }) {
             >
               {formatIsoString(message.timestamp)}
             </span>
+          </div>
+          <div className="align-baseline text-base wrap-break-word">
+            {message.content}
             {message.editedTimestamp && (
-              <span
-                className={cn(
-                  "pl-1 text-xs text-slate-500",
-                  isError ? "text-red-500" : "",
-                )}
-              >
-                (Edited {formatIsoString(message.editedTimestamp)})
-              </span>
+              <Tooltip delayDuration={700}>
+                <TooltipTrigger asChild>
+                  <span className="text-[10px] text-slate-500"> (edited)</span>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Edited {formatIsoString(message.editedTimestamp)}</p>
+                </TooltipContent>
+              </Tooltip>
             )}
           </div>
-          <div className="text-base wrap-break-word">{message.content}</div>
         </div>
       </div>
     </div>

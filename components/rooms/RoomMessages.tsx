@@ -1,8 +1,10 @@
-import { Room } from "@/lib/types";
+"use client";
+
+import { Message, Room } from "@/lib/types";
 import { MessageEvent } from "@/lib/socketTypes";
 import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 import { getMessages } from "@/lib/api";
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import RoomMessage from "@/components/rooms/RoomMessage";
 import { gatewaySocket } from "@/lib/sockets";
 import {
@@ -11,6 +13,7 @@ import {
   editExistingMessage,
 } from "@/lib/query";
 import RoomMessagesLoading from "@/components/rooms/RoomMessagesLoading";
+import EditMessageDialog from "@/components/dialogs/EditMessageDialog";
 
 export default function RoomMessages({ room }: { room: Room }) {
   // Use query client
@@ -18,6 +21,12 @@ export default function RoomMessages({ room }: { room: Room }) {
 
   // Create reference to messages container
   const messageContainer = useRef<HTMLDivElement>(null);
+
+  // Create dialog state
+  const [messageEditOpen, setMessageEditOpen] = useState(false);
+
+  // Create editing message state
+  const [editingMessage, setEditingMessage] = useState<Message | null>(null);
 
   // Subscribe to messages from room
   useEffect(() => {
@@ -88,17 +97,31 @@ export default function RoomMessages({ room }: { room: Room }) {
 
   // Return messages container
   return (
-    <div
-      className="h-full w-full overflow-x-hidden overflow-y-scroll rounded-xl border-2 border-slate-600 bg-white py-2"
-      ref={messageContainer}
-    >
-      {!isPending ? (
-        messages.map((message) => (
-          <RoomMessage message={message} key={message.id} />
-        ))
-      ) : (
-        <RoomMessagesLoading />
-      )}
-    </div>
+    <>
+      <div
+        className="h-full w-full overflow-x-hidden overflow-y-scroll rounded-xl border-2 border-slate-600 bg-white py-2"
+        ref={messageContainer}
+      >
+        {!isPending ? (
+          messages.map((message) => (
+            <RoomMessage
+              message={message}
+              key={message.id}
+              openEditModal={(message) => {
+                setEditingMessage(message);
+                setMessageEditOpen(true);
+              }}
+            />
+          ))
+        ) : (
+          <RoomMessagesLoading />
+        )}
+      </div>
+      <EditMessageDialog
+        open={messageEditOpen}
+        setOpen={setMessageEditOpen}
+        message={editingMessage}
+      />
+    </>
   );
 }

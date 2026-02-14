@@ -12,13 +12,11 @@ import { createInvite } from "@/lib/api";
 export default function RoomSidebarLink({
   room,
   activeRoomId,
-  setInvite,
   openInviteModal,
 }: {
   room: PartialRoom;
   activeRoomId: string | undefined;
-  setInvite: (invite: PartialInvite) => void;
-  openInviteModal: () => void;
+  openInviteModal: (invite: PartialInvite) => void;
 }) {
   // Check whether room is active
   const activeRoom = room.id === activeRoomId;
@@ -53,9 +51,8 @@ export default function RoomSidebarLink({
                   maxUses: null,
                 });
 
-                // Set invite and open invite created modal
-                setInvite(invite);
-                openInviteModal();
+                // Open invite created modal
+                openInviteModal(invite);
               }}
             >
               <UserPlus className="size-4.5" />
